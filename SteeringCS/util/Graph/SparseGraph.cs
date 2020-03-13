@@ -20,8 +20,6 @@ namespace SteeringCS.util.Graph
         {
             vertexMap = new Dictionary<Vector2D, GraphNode>();
         }
-
-
         //----------------------------------------------------------------------
         // Interface methods that have to be implemented for exam
         //----------------------------------------------------------------------

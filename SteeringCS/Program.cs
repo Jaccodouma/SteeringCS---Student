@@ -15,9 +15,9 @@ namespace SteeringCS
         [STAThread]
         static void Main()
         {
-            //    Application.EnableVisualStyles();
-            //    Application.SetCompatibleTextRenderingDefault(false);
-            //    Application.Run(new Form1());
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new Form1());
 
             /*Vector2D vec0 = new Vector2D(0, 0);
             Vector2D vec1 = new Vector2D(500, 500);
@@ -49,7 +49,7 @@ namespace SteeringCS
 
             graph.Dijkstra(vec0);*/
 
-            SparseGraph graph;
+            //SparseGraph graph;
         }
     }
 }
