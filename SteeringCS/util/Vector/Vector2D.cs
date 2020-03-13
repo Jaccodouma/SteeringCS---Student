@@ -115,7 +115,25 @@ namespace SteeringCS
 
             return this;
         }
-        
+
+        public double VectorDistance(Vector2D vector)
+        {
+            double newX, newY, returnLength;
+            newX = vector.X - this.X;
+            newY = vector.Y - this.Y;
+            returnLength = new Vector2D(newX, newY).Length();
+            return returnLength;
+        }
+
+        public double VectorDistanceSq(Vector2D vector)
+        {
+            double newX, newY, returnLength;
+            newX = vector.X - this.X;
+            newY = vector.Y - this.Y;
+            returnLength = new Vector2D(newX, newY).LengthSquared();
+            return returnLength;
+        }
+
         public Vector2D Clone()
         {
             return new Vector2D(this.X, this.Y);

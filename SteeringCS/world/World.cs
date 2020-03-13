@@ -25,6 +25,9 @@ namespace SteeringCS
         {
             Width = w;
             Height = h;
+            //obstacles init
+            //graph init
+
             populate();
         }
 
