@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SteeringCS.util.Graph;
 
 namespace SteeringCS
 {
@@ -14,6 +15,7 @@ namespace SteeringCS
     {
         private List<MovingEntity> entities = new List<MovingEntity>();
         private Queue<MovingEntity> newEntities = new Queue<MovingEntity>();
+        private NavMesh navigation;
         public Target Target { get; set; }
         public MovingEntity selectedEntity { get; set; }
         public int Width { get; set; }
@@ -26,7 +28,7 @@ namespace SteeringCS
             Width = w;
             Height = h;
             //obstacles init
-            //graph init
+            navigation = new NavMesh(this);
 
             populate();
         }
@@ -79,6 +81,10 @@ namespace SteeringCS
             {
                 selectedEntity.RenderDebug(g);
                 selectedEntity.SteeringBehaviours.ForEach(sb => sb.Render(g));
+            }
+            if(navigation != null)
+            {
+                navigation.Render(g);
             }
         }
 

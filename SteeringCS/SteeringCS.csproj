@@ -76,6 +76,7 @@
     <Compile Include="util\Data\Enums.cs" />
     <Compile Include="util\Graph\GraphEdge.cs" />
     <Compile Include="util\Graph\GraphNode.cs" />
+    <Compile Include="util\Graph\NavMesh.cs" />
     <Compile Include="util\Graph\SparseGraph.cs" />
     <Compile Include="util\Vector\Vector2D.cs" />
     <Compile Include="world\World.cs" />

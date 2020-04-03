@@ -9,7 +9,7 @@ namespace SteeringCS.util.Graph
 {
     class SparseGraph
     {
-        private Dictionary<Vector2D, GraphNode> vertexMap;
+        public Dictionary<Vector2D, GraphNode> vertexMap;
         private GraphNode currentGraphNode;
 
         //----------------------------------------------------------------------
@@ -21,9 +21,13 @@ namespace SteeringCS.util.Graph
             vertexMap = new Dictionary<Vector2D, GraphNode>();
         }
         //----------------------------------------------------------------------
-        // Interface methods that have to be implemented for exam
+        // Getters & Setters
         //----------------------------------------------------------------------
 
+        public Dictionary<Vector2D, GraphNode> GetVertexMap()
+        {
+            return this.vertexMap;
+        }
         public GraphNode GetVertex(Vector2D name)
         {
             //TODO ContainsKey has to be made better
@@ -42,7 +46,12 @@ namespace SteeringCS.util.Graph
         {
             GraphNode v = GetVertex(source);
             GraphNode w = GetVertex(dest);
-            v.adj.Add(new GraphEdge(w, source.VectorDistance(dest)));
+            GraphEdge edge = new GraphEdge(w, source.VectorDistance(dest));
+
+            if (!v.adj.Contains<GraphEdge>(edge))
+            {
+                v.adj.Add(edge);
+            }
         }
 
         public void ClearAll()

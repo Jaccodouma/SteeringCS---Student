@@ -16,10 +16,18 @@ namespace SteeringCS
         {
         }
 
+
+
         public Vector2D(double x, double y)
         {
             X = x;
             Y = y;
+        }
+
+        public Vector2D(Vector2D v)
+        {
+            X = v.X;
+            Y = v.Y;
         }
 
         public double Length()
