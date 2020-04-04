@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Priority_Queue;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -13,7 +14,6 @@ namespace SteeringCS.util.Graph
         /*Variables---------------------------------------------------------------------------------*/
         /*------------------------------------------------------------------------------------------*/
         World currentWorld;
-        double graining;
         double waypoint_size = 10;
         bool already_rendered;
 
@@ -147,5 +147,6 @@ namespace SteeringCS.util.Graph
                 }
             }
         }
+        
     }
 }

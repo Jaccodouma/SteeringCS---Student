@@ -9,7 +9,8 @@ namespace SteeringCS.util.Graph
         /*------------------------------------------------------------------------------------------*/
         /*Variables---------------------------------------------------------------------------------*/
         /*------------------------------------------------------------------------------------------*/
-        public int INFINITY = -1;
+        public double INFINITY = double.PositiveInfinity;
+        public double graining;
         public Dictionary<string, Node> nodeMap = new Dictionary<string, Node>();
 
 
@@ -62,46 +63,5 @@ namespace SteeringCS.util.Graph
             nodeMap.Add(node_name, new Node(node_name, position));
             return nodeMap[node_name];
         }
-
-        private void _Flood_fill(int x, int y)
-        {
-
-        }
-        /*----------------------------------------------------------------*/
-        /*Path-finding-algorithms-----------------------------------------*/
-        /*----------------------------------------------------------------*/
-
-        public void Breath_first_search(Node current_position)
-        {
-            FastPriorityQueue<Node> queue = new FastPriorityQueue<Node>(nodeMap.Count);
-
-            foreach(KeyValuePair<string, Node> node in nodeMap)
-            {
-                node.Value.shortest_distance_to_dest = INFINITY;
-            }
-
-            current_position.shortest_distance_to_dest = 0;
-            queue.Enqueue(current_position, 1);
-
-            while(queue.Count > 0)
-            {
-                Node node = queue.Dequeue();
-                foreach(KeyValuePair<string,Edge> n in node.adjecent_edges)
-                {
-                    if(n.Value.destination.shortest_distance_to_dest == INFINITY)
-                    {
-                        n.Value.destination.shortest_distance_to_dest = node.shortest_distance_to_dest + 1;
-                        n.Value.destination.previous_node_shortest_path = node;
-                        queue.Enqueue(n.Value.destination, 1);
-                    }
-                }
-            }
-
-            foreach(KeyValuePair<string, Node> node in nodeMap)
-            {
-                Console.WriteLine(node.Key + "(" + node.Value.shortest_distance_to_dest + ")");
-            }
-        }
-
     }
 }
