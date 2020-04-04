@@ -17,22 +17,11 @@ namespace SteeringCS.behaviour
         {
             this.targets = targets;
             this.neighbourhoodRadius = 40;
+            base.name = "Cohesion";
         }
 
         public override Vector2D Calculate()
         {
-            //    Vector2D velocity = new Vector2D();
-
-            //    foreach(BaseGameEntity target in targets)
-            //    {
-            //        if ((target.Pos - ME.Pos).Length() < neighbourhoodRadius && target != ME)
-            //        {
-            //            velocity.Add(target.Pos - ME.Pos);
-            //        }
-            //    }
-
-            //    return velocity;
-
             // Get center of mass of all neigbouring agents
             Vector2D CenterOfMass = new Vector2D();
             Vector2D SteeringForce = new Vector2D();
@@ -52,6 +41,7 @@ namespace SteeringCS.behaviour
 
                 SteeringForce = CenterOfMass - ME.Pos;
             }
+            this.lastSteeringForce = SteeringForce;
             return SteeringForce;
         }
 

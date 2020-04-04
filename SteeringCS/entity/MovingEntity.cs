@@ -12,13 +12,12 @@ namespace SteeringCS.entity
         public Vector2D Velocity { get; set; }
         public float Mass { get; set; }
         public float MaxSpeed { get; set; }
-        public float MinSpeed { get; set; }
 
         public List<SteeringBehaviour> SteeringBehaviours { get; set; }
 
         public MovingEntity(Vector2D pos, World w) : base(pos, w)
         {
-            Mass = 10;
+            Mass = 100;
             MaxSpeed = 50;
             Velocity = new Vector2D();
             SteeringBehaviours = new List<SteeringBehaviour>();
