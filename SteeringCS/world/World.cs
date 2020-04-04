@@ -13,9 +13,11 @@ namespace SteeringCS
 {
     class World
     {
+        private Navigation_Graph navigation_graph;
+        private double graining = 50;
+
         private List<MovingEntity> entities = new List<MovingEntity>();
         private Queue<MovingEntity> newEntities = new Queue<MovingEntity>();
-        private NavMesh navigation;
         public Target Target { get; set; }
         public MovingEntity selectedEntity { get; set; }
         public int Width { get; set; }
@@ -28,9 +30,9 @@ namespace SteeringCS
             Width = w;
             Height = h;
             //obstacles init
-            navigation = new NavMesh(this);
-
             populate();
+            navigation_graph = new Navigation_Graph(this, graining);
+            navigation_graph.Flood_fill();
         }
 
         private void populate()
@@ -82,9 +84,10 @@ namespace SteeringCS
                 selectedEntity.RenderDebug(g);
                 selectedEntity.SteeringBehaviours.ForEach(sb => sb.Render(g));
             }
-            if(navigation != null)
+
+            if(navigation_graph != null)
             {
-                navigation.Render(g);
+                navigation_graph.Render(g);
             }
         }
 
