@@ -78,6 +78,7 @@
     <Compile Include="util\Graph\Graph.cs" />
     <Compile Include="util\Graph\Navigation_Graph.cs" />
     <Compile Include="util\Graph\Node.cs" />
+    <Compile Include="util\Graph\Path_planning.cs" />
     <Compile Include="util\Vector\Vector2D.cs" />
     <Compile Include="world\World.cs" />
     <EmbeddedResource Include="Form1.resx">

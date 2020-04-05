@@ -27,6 +27,7 @@ namespace SteeringCS.util.Graph
             if (grain < 8) throw new Exception("Graining should be atleast 4");
             this.graining = grain;
 
+            spatial_partitioning = new Dictionary<double, List<Node>>();
             already_rendered = false;
         }
 
@@ -40,8 +41,8 @@ namespace SteeringCS.util.Graph
         public void Flood_fill()
         {
             Random random = new Random();
-            double x = random.Next((int)(currentWorld.Width - graining / 2));
-            double y = random.Next((int)(currentWorld.Height - graining / 2));
+            double x = random.Next((int)(graining / 2), (int)(currentWorld.Width - graining / 2));
+            double y = random.Next((int)(graining / 2), (int)(currentWorld.Height - graining / 2));
             string old = x.ToString() + "," + y.ToString();
             _Flood_fill(x, y, old);
             Console.WriteLine("floodfill finished");
@@ -124,7 +125,7 @@ namespace SteeringCS.util.Graph
             if (already_rendered) return;
 
             Brush brush = new SolidBrush(Color.Gray);
-            Pen pen = new Pen(Color.Black, 2);
+            Pen pen = new Pen(Color.Gray, 2);
             foreach (KeyValuePair<string, Node> node in nodeMap)
             {
                 g.FillEllipse(
@@ -146,7 +147,46 @@ namespace SteeringCS.util.Graph
                         );
                 }
             }
+            pen.Color = Color.BlueViolet;
+            pen.Width = 1;
+            for (double i = 0; i < currentWorld.Width; i += size_of_partitioning)
+            {
+                g.DrawLine(pen, (float)i, 0, (float)i, currentWorld.Height);
+            }
+
+            for (double i = 0; i < currentWorld.Height; i += size_of_partitioning)
+            {
+                g.DrawLine(pen, 0, (float)i, currentWorld.Width, (float)i);
+            }
+            //make sure it does not get rendered again.
+            //BE FRIENDLY TO YOUR CPU YEAH!!
+            //this.already_rendered = true;
         }
-        
+
+        /*----------------------------------------------------------------*/
+        /*Spacial-partitioning-of-mesh-nodes------------------------------*/
+        /*----------------------------------------------------------------*/
+        public void Spacial_partitioning_subscribe()
+        {
+            double amount_of_cells = Math.Ceiling((currentWorld.Width / size_of_partitioning) * (currentWorld.Height / size_of_partitioning));
+            for (double i = 0; i < amount_of_cells; i++)
+            {
+                spatial_partitioning.Add(i, new List<Node>());
+            }
+
+            if (nodeMap.Count < 0) throw new Exception("Graph is empty");
+            foreach (KeyValuePair<string, Node> key in nodeMap)
+            {
+                if (spatial_partitioning.ContainsKey(Math.Floor((key.Value.position_of_node.X / size_of_partitioning)
+                    * (key.Value.position_of_node.Y / size_of_partitioning))))
+                {
+                    spatial_partitioning[Math.Floor((key.Value.position_of_node.X / size_of_partitioning) * (key.Value.position_of_node.Y / size_of_partitioning))].Add(
+                            key.Value
+                        );
+                }
+                else throw new Exception("key not found: " + (key.Value.position_of_node.X / size_of_partitioning)
+                    * (key.Value.position_of_node.Y / size_of_partitioning));
+            }
+        }
     }
 }

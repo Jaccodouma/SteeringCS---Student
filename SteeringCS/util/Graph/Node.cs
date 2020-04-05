@@ -13,6 +13,7 @@ namespace SteeringCS.util.Graph
         /*Variables-------------------------------------------------------*/
         /*----------------------------------------------------------------*/
         //constructor vars
+        public double INFINITY = double.PositiveInfinity;
         public string id;
         public Dictionary<string, Edge> adjecent_edges;
         public Vector2D position_of_node;
@@ -21,17 +22,19 @@ namespace SteeringCS.util.Graph
         public double shortest_distance_to_dest;
         public Node previous_node_shortest_path;
         public bool handled_node;
+        public double heuristic_euclidean;
 
         /*----------------------------------------------------------------*/
         /*Constructors----------------------------------------------------*/
         /*----------------------------------------------------------------*/
-        public Node(string id, Vector2D position)
+        public Node(Vector2D position)
         {
-            this.id = id;
+            this.id = position.X + "," + position.Y;
             this.adjecent_edges = new Dictionary<string, Edge>();
             this.position_of_node = position;
 
-            this.shortest_distance_to_dest = -1;
+            this.shortest_distance_to_dest = INFINITY;
+            this.heuristic_euclidean = INFINITY;
             this.previous_node_shortest_path = null;
             this.handled_node = false;
         }

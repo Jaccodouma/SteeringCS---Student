@@ -13,6 +13,9 @@ namespace SteeringCS.util.Graph
         public double graining;
         public Dictionary<string, Node> nodeMap = new Dictionary<string, Node>();
 
+        //Vars for spacial partitioning
+        public Dictionary<double, List<Node>> spatial_partitioning;
+        public double size_of_partitioning = 50;
 
         /*------------------------------------------------------------------------------------------*/
         /*Constructors------------------------------------------------------------------------------*/
@@ -60,8 +63,19 @@ namespace SteeringCS.util.Graph
         public Node Get_node(string node_name, Vector2D position)
         {
             if (nodeMap.ContainsKey(node_name)) return nodeMap[node_name];
-            nodeMap.Add(node_name, new Node(node_name, position));
+            nodeMap.Add(node_name, new Node(position));
             return nodeMap[node_name];
+        }
+
+        public void Reset_algorithm()
+        {
+            foreach (KeyValuePair<string,Node> node in nodeMap)
+            {
+                node.Value.shortest_distance_to_dest = INFINITY;
+                node.Value.previous_node_shortest_path = null;
+                node.Value.handled_node = false;
+                node.Value.heuristic_euclidean = INFINITY;
+            }
         }
     }
 }

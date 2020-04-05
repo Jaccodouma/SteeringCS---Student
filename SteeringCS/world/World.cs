@@ -13,8 +13,9 @@ namespace SteeringCS
 {
     class World
     {
-        private Navigation_Graph navigation_graph;
-        private double graining = 50;
+        public Navigation_Graph navigation_graph;
+        private double graining = 20; //distance between nodes in floodfill
+        public Path_planning path_Planning;
 
         private List<MovingEntity> entities = new List<MovingEntity>();
         private Queue<MovingEntity> newEntities = new Queue<MovingEntity>();
@@ -33,6 +34,9 @@ namespace SteeringCS
             populate();
             navigation_graph = new Navigation_Graph(this, graining);
             navigation_graph.Flood_fill();
+            navigation_graph.Spacial_partitioning_subscribe();
+            path_Planning = new Path_planning(new Vehicle(new Vector2D(100,100), this));
+            
         }
 
         private void populate()
@@ -74,6 +78,11 @@ namespace SteeringCS
 
         public void Render(Graphics g)
         {
+            if (navigation_graph != null)
+            {
+                navigation_graph.Render(g);
+            }
+
             entities.ForEach(e =>
             {
                 e.Render(g);
@@ -83,12 +92,14 @@ namespace SteeringCS
             {
                 selectedEntity.RenderDebug(g);
                 selectedEntity.SteeringBehaviours.ForEach(sb => sb.Render(g));
+
+                if (path_Planning != null)
+                {
+                    path_Planning.owner = selectedEntity;
+                    path_Planning.Create_path_to_position(new Vector2D(200, 200), new List<Vector2D>(), Path_planning.kind_of_algorithm.BF, g);
+                }
             }
 
-            if(navigation_graph != null)
-            {
-                navigation_graph.Render(g);
-            }
         }
 
         public void addEntity(int x, int y)
