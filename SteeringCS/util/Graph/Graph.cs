@@ -15,7 +15,7 @@ namespace SteeringCS.util.Graph
 
         //Vars for spacial partitioning
         public Dictionary<double, List<Node>> spatial_partitioning;
-        public double size_of_partitioning = 50;
+        public double size_of_partitioning = 100;
 
         /*------------------------------------------------------------------------------------------*/
         /*Constructors------------------------------------------------------------------------------*/
