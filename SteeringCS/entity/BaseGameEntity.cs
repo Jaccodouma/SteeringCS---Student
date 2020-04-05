@@ -24,7 +24,7 @@ namespace SteeringCS
         public BaseGameEntity(Vector2D pos, World w)
         {
             Pos = pos;
-            _Dir = new Vector2D(0,0);
+            _Dir = new Vector2D(0,-1).Normalize();
             MyWorld = w;
         }
 

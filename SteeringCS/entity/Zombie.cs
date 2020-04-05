@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace SteeringCS.entity
 {
-    class Vehicle : MovingEntity
+    class Zombie : MovingEntity
     {
         public Color VColor { get; set; }
 
-        public Vehicle(Vector2D pos, World w) : base(pos, w)
+        public Zombie(Vector2D pos, World w) : base(pos, w)
         {
             Velocity = new Vector2D(0, 0);
             Dir = new Vector2D(w.rnd.Next(-1, 1), w.rnd.Next(-1, 1)).Normalize();
@@ -69,7 +69,6 @@ namespace SteeringCS.entity
                 b.RenderInfoPanel(g, x, y);
                 y += 100;
             });
-            p.Size = new Size(p.Size.Width, y);
         }
     }
 }
