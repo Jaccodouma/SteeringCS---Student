@@ -60,5 +60,16 @@ namespace SteeringCS.entity
                 // Happens when drawing line to outside of the screen
             }
         }
+
+        public override void RenderDebugPanel(Graphics g, DBPanel p)
+        {
+            int x = 0, y = 0;
+            this.SteeringBehaviours.ForEach(b =>
+            {
+                b.RenderInfoPanel(g, x, y);
+                y += 100;
+            });
+            p.Size = new Size(p.Size.Width, y);
+        }
     }
 }

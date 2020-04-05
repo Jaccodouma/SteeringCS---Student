@@ -14,14 +14,13 @@ namespace SteeringCS.behaviour
         public SeekBehaviour(MovingEntity me, BaseGameEntity target) : base(me)
         {
             this.target = target;
+            this.name = "Seek";
         }
 
         public override Vector2D Calculate()
         {
-            Vector2D desiredVelocity = target.Pos.Clone().Sub(ME.Pos);
-            desiredVelocity.Normalize();
-            desiredVelocity.Multiply(ME.MaxSpeed);
-            desiredVelocity.Sub(ME.Velocity);
+            Vector2D desiredVelocity = (target.Pos - ME.Pos).Normalize();
+            this.lastSteeringForce = desiredVelocity;
             return desiredVelocity;
         }
 

@@ -32,6 +32,10 @@ namespace SteeringCS.behaviour
 
             rnd = me.MyWorld.rnd;
         }
+        public override string ToString()
+        {
+            return "Wander";
+        }
 
         public override Vector2D Calculate()
         {
@@ -44,7 +48,9 @@ namespace SteeringCS.behaviour
             // Create wanderTarget ahead of entity        to ME    Ahead of ME  At wanderDistance
             worldTarget = wanderCircle + wanderTarget;
 
-            return (worldTarget - ME.Pos).Normalize();
+            Vector2D steeringForce = (worldTarget - ME.Pos).Normalize();
+            this.lastSteeringForce = steeringForce;
+            return steeringForce;
         }
         public override void Render(Graphics g)
         {
