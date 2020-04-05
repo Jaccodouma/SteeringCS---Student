@@ -100,7 +100,7 @@ namespace SteeringCS
             //SteeringBehaviour arr = new ArriveBehaviour(v, Target, Deceleration.slow);
             //v.SteeringBehaviours.Add(arr);
             SteeringBehaviour seek = new SeekBehaviour(v, Target);
-            //seek.weight = 2;
+            seek.weight = 2;
             v.SteeringBehaviours.Add(seek);
 
             SteeringBehaviour coh = new Group_CohesionBehaviour(v, entities);
