@@ -13,15 +13,18 @@ namespace SteeringCS.entity
         private int range = 100; 
         private Zombie target;
         private int checkInterval = 10;
-        private int currentCheck = 0; 
+        private int currentCheck = 0;
+        private float timeBetweenShots = 10;
+        private float nextShotTime = 0;
 
         public Turret(Vector2D pos, World w) : base(pos, w) { }
 
         public override void Update(float delta)
         {
-            if (true) // CHECK INTERVAL
+            if (currentCheck == 0) // CHECK INTERVAL
             {
                 // Find nearest zombie
+                // TODO: REPLACE WITH FUZZY LOGIC
                 List<MovingEntity> zombies = this.MyWorld.getZombies();
                 Zombie nearestZombie = null;
                 Vector2D nearestZombieDistance = new Vector2D(range, range);
@@ -32,7 +35,6 @@ namespace SteeringCS.entity
                     double len = distance.LengthSquared();
                     if (len < nearestZombieDistance.LengthSquared() && len < Math.Pow(range,2))
                     {
-                        Console.WriteLine((z.Pos - this.Pos).LengthSquared() + " - " + nearestZombieDistance.LengthSquared());
                         nearestZombie = (Zombie)z;
                         nearestZombieDistance = distance;
                     }
@@ -47,11 +49,20 @@ namespace SteeringCS.entity
                     target = null; // Set target to null if out of range too
                 }
             }
+            currentCheck++;
+            currentCheck %= checkInterval;
 
             if (target != null)
             {
                 // Set direction
                 Dir = (target.Pos - this.Pos).Normalize();
+
+                // Shoot
+                if (this.MyWorld.time > nextShotTime)
+                {
+                    target.doDamage(10);
+                    nextShotTime += timeBetweenShots;
+                }
             } else
             {
                 // If no target, just rotate as 'scan' 

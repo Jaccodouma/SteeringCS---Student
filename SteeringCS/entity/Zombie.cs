@@ -10,12 +10,15 @@ namespace SteeringCS.entity
     class Zombie : MovingEntity
     {
         public Color VColor { get; set; }
+        private double health; 
+        private double maxHealth = 100;
 
         public Zombie(Vector2D pos, World w) : base(pos, w)
         {
             Velocity = new Vector2D(0, 0);
             Dir = new Vector2D(w.rnd.Next(-1, 1), w.rnd.Next(-1, 1)).Normalize();
             Scale = 5;
+            health = 100;
 
             VColor = Color.Black;
         }
@@ -42,6 +45,24 @@ namespace SteeringCS.entity
                 new Point[] {
                     front, backLeft, back, backRight
                 });
+
+            // Draw health
+            p = new Pen(Color.Red, 3);
+            g.DrawLine(
+                p,
+                (float)this.Pos.X - 10,
+                (float)(this.Pos.Y - size * 1.5),
+                (float)this.Pos.X + 10,
+                (float)(this.Pos.Y - size * 1.5)
+                );
+            p = new Pen(Color.Green, 3);
+            g.DrawLine(
+                p,
+                (float)this.Pos.X - 10,
+                (float)(this.Pos.Y - size * 1.5),
+                (float)(this.Pos.X - 10 + health/maxHealth*20),
+                (float)(this.Pos.Y - size * 1.5)
+                );
         }
 
         public override void RenderDebug(Graphics g)
@@ -69,6 +90,17 @@ namespace SteeringCS.entity
                 b.RenderInfoPanel(g, x, y);
                 y += 100;
             });
+        }
+
+        public void doDamage(double damage)
+        {
+            health -= damage;
+
+            if (health < 0)
+            {
+                // Delete
+                this.MyWorld.removeEntity(this);
+            }
         }
     }
 }

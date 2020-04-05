@@ -18,6 +18,7 @@ namespace SteeringCS
 
         private List<BaseGameEntity> entities = new List<BaseGameEntity>();
         private Queue<BaseGameEntity> newEntities = new Queue<BaseGameEntity>();
+        private Queue<BaseGameEntity> removeEntities = new Queue<BaseGameEntity>();
 
         private List<MovingEntity> zombies = new List<MovingEntity>();
 
@@ -28,10 +29,23 @@ namespace SteeringCS
 
         public Random rnd = new Random();
 
+        public float time; 
+
+        public void removeEntity(BaseGameEntity e)
+        {
+            this.removeEntities.Enqueue(e);
+            if (e is Zombie)
+            {
+                zombies.Remove((Zombie) e);
+            }
+        }
+
         public World(int w, int h)
         {
             Width = w;
             Height = h;
+            time = 0; 
+
             //obstacles init
             populate();
             navigation_graph = new Navigation_Graph(this, graining);
@@ -55,6 +69,8 @@ namespace SteeringCS
 
         public void Update(float timeElapsed)
         {
+            time += timeElapsed;
+
             foreach (BaseGameEntity me in entities)
             {
                 me.Update(timeElapsed);
@@ -62,6 +78,10 @@ namespace SteeringCS
             while (newEntities.Count > 0)
             {
                 entities.Add(newEntities.Dequeue());
+            }
+            while (removeEntities.Count > 0)
+            {
+                entities.Remove(removeEntities.Dequeue());
             }
         }
 
