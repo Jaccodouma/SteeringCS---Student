@@ -36,5 +36,7 @@ namespace SteeringCS
         }
 
         public virtual void RenderDebug(Graphics g) { }
+
+        public virtual void RenderDebugPanel(Graphics g, DBPanel p) { }
     }
 }

@@ -32,12 +32,12 @@ namespace SteeringCS
 
         public double Length()
         {
-            return (Math.Sqrt(Math.Pow(this.X, 2) + Math.Pow(this.Y, 2)));
+            return Math.Sqrt(this.LengthSquared());
         }
 
         public double LengthSquared()
         {
-            return Math.Pow(this.Length(), 2);
+            return (Math.Pow(this.X, 2) + Math.Pow(this.Y, 2));
         }
 
         public Vector2D Add(Vector2D v)

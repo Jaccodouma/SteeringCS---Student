@@ -16,7 +16,8 @@ namespace SteeringCS.behaviour
         public Group_SeperationBehaviour(MovingEntity me, List<MovingEntity> targets) : base(me)
         {
             this.targets = targets;
-            this.neighbourhoodRadius = 50;
+            this.neighbourhoodRadius = 40;
+            this.name = "Seperation";
         }
 
         public override Vector2D Calculate()
@@ -28,10 +29,11 @@ namespace SteeringCS.behaviour
                 if ((target.Pos - ME.Pos).Length() < neighbourhoodRadius && target != ME)
                 {
                     Vector2D toAgent = ME.Pos - target.Pos;
-                    steeringForce += toAgent.Normalize() / toAgent.Length();
+                    steeringForce += (toAgent.Clone().Normalize() / toAgent.Length() )* 200;
                 }
             }
 
+            this.lastSteeringForce = steeringForce;
             return steeringForce;
         }
 

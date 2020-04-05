@@ -45,7 +45,7 @@ namespace SteeringCS
             Target.VColor = Color.DarkRed;
             Target.Pos = new Vector2D(100, 40);
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 20; i++)
                 addEntity(rnd.Next(0,Width),rnd.Next(0,Height));
         }
 
@@ -110,8 +110,9 @@ namespace SteeringCS
 
             //SteeringBehaviour arr = new ArriveBehaviour(v, Target, Deceleration.slow);
             //v.SteeringBehaviours.Add(arr);
-            //SteeringBehaviour seek = new SeekBehaviour(v, Target);
-            //v.SteeringBehaviours.Add(seek);
+            SteeringBehaviour seek = new SeekBehaviour(v, Target);
+            //seek.weight = 2;
+            v.SteeringBehaviours.Add(seek);
 
             SteeringBehaviour coh = new Group_CohesionBehaviour(v, entities);
             v.SteeringBehaviours.Add(coh);
@@ -119,7 +120,7 @@ namespace SteeringCS
             SteeringBehaviour sep = new Group_SeperationBehaviour(v, entities);
             v.SteeringBehaviours.Add(sep);
 
-            SteeringBehaviour wander = new WanderBehaviour(v, 20, 20, 10);
+            SteeringBehaviour wander = new WanderBehaviour(v, 70, 50, 10);
             v.SteeringBehaviours.Add(wander);
 
             newEntities.Enqueue(v);
