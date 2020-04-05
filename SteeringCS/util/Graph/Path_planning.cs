@@ -22,6 +22,8 @@ namespace SteeringCS.util.Graph
         public enum kind_of_algorithm
         {
             BF = 1,
+            DK = 2,
+            AS = 3
         }
 
         public BaseGameEntity owner;       //owner of the pathplanning class
@@ -94,7 +96,10 @@ namespace SteeringCS.util.Graph
             //Reset node values for algorithm
             currentGraph.Reset_algorithm();
             path.Add(owner.Pos.Clone());
-            Breath_first_search_fast(path, closest_node_to_owner, closest_node_to_target);
+
+            if(algorithm == kind_of_algorithm.BF) Breath_first_search_fast(path, closest_node_to_owner, closest_node_to_target);
+            if (algorithm == kind_of_algorithm.DK) Dijkstra_fast(path, closest_node_to_owner, closest_node_to_target);
+            if (algorithm == kind_of_algorithm.AS) A_star(path, closest_node_to_owner, closest_node_to_target);
             path.Add(destination_position.Clone());
 
             Render_path(g, path);
@@ -135,6 +140,27 @@ namespace SteeringCS.util.Graph
                 }
             }
             return path;
+        }
+
+        public List<Vector2D> Dijkstra_fast(List<Vector2D> path, string start_node, string destination)
+        {
+            FastPriorityQueue<Node> queue_fast = new FastPriorityQueue<Node>(currentGraph.nodeMap.Count + 1);
+            Node iterator = currentGraph.nodeMap[start_node];
+
+            iterator.shortest_distance_to_dest = 0;
+            queue_fast.Enqueue(iterator, (float)iterator.heuristic_euclidean);
+
+            while (queue_fast.Count > 0)
+            {
+                iterator = queue_fast.Dequeue();
+                path.Add(iterator.position_of_node);
+            }
+            return path;
+        }
+
+        public List<Vector2D> A_star(List<Vector2D> path, string start_node, string destination)
+        {
+            throw new NotImplementedException();
         }
 
         public void Render_path(Graphics g, List<Vector2D> path)
