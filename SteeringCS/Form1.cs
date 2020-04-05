@@ -13,7 +13,6 @@ namespace SteeringCS
     public partial class Form1 : Form
     {
         World world;
-        GameDebug debug; 
         System.Timers.Timer timer;
         public const float timeDelta = 0.8f;
 
@@ -21,12 +20,13 @@ namespace SteeringCS
 
         private bool paused = true;
 
+        private DBPanel debugPanel; 
+
         public Form1()
         {
             InitializeComponent();
 
             world = new World(w: dbPanel1.Width, h: dbPanel1.Height);
-            debug = new GameDebug(world);
 
             initTabs();
 
@@ -69,8 +69,8 @@ namespace SteeringCS
 
             tab_behaviors_panel.BorderStyle = BorderStyle.Fixed3D;
 
-            debug.behavioursPanel = tab_behaviors_panel;
-            tab_behaviors_panel.Paint += debug.behaviorsPanel_Paint;
+            debugPanel = tab_behaviors_panel;
+            tab_behaviors_panel.Paint += behaviorsPanel_Paint;
 
             panels.Add(tab_behaviors_panel);
             
@@ -93,7 +93,12 @@ namespace SteeringCS
         {
             world.Render(e.Graphics);
         }
-        
+        public void behaviorsPanel_Paint(object sender, PaintEventArgs e)
+        {
+            if (this.world.selectedEntity != null)
+                this.world.selectedEntity.RenderDebugPanel(e.Graphics, this.debugPanel);
+        }
+
         private void dbPanel1_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
