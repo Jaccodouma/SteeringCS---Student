@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SteeringCS.util.Data;
 
 namespace SteeringCS.util.Graph
 {
@@ -17,18 +18,22 @@ namespace SteeringCS.util.Graph
         double waypoint_size = 10;
         bool already_rendered;
 
+
         /*------------------------------------------------------------------------------------------*/
         /*Constructors------------------------------------------------------------------------------*/
         /*------------------------------------------------------------------------------------------*/
-        public Navigation_Graph(World world, double grain)
+        public Navigation_Graph(World world, double grain, Cellspace_partitioning partitioning)
         {
             if (world == null) throw new Exception("World that is passed equals NULL");
             this.currentWorld = world;
             if (grain < 8) throw new Exception("Graining should be atleast 4");
             this.graining = grain;
 
-            spatial_partitioning = new Dictionary<double, List<Node>>();
             already_rendered = false;
+            if (partitioning == null) throw new Exception("Spatial partitioning is NULL");
+            this.spatial_partitioning = partitioning.Clone();
+            Flood_fill();
+            Spacial_partitioning_subscribe();
         }
 
 
@@ -38,7 +43,7 @@ namespace SteeringCS.util.Graph
         /*----------------------------------------------------------------*/
         /*Flood-fill-algorithms-------------------------------------------*/
         /*----------------------------------------------------------------*/
-        public void Flood_fill()
+        private void Flood_fill()
         {
             Random random = new Random();
             double x = random.Next((int)(graining / 2), (int)(currentWorld.Width - graining / 2));
@@ -147,17 +152,6 @@ namespace SteeringCS.util.Graph
                         );
                 }
             }
-            pen.Color = Color.BlueViolet;
-            pen.Width = 1;
-            for (double i = 0; i < currentWorld.Width; i += size_of_partitioning)
-            {
-                g.DrawLine(pen, (float)i, 0, (float)i, currentWorld.Height);
-            }
-
-            for (double i = 0; i < currentWorld.Height; i += size_of_partitioning)
-            {
-                g.DrawLine(pen, 0, (float)i, currentWorld.Width, (float)i);
-            }
             //make sure it does not get rendered again.
             //BE FRIENDLY TO YOUR CPU YEAH!!
             //this.already_rendered = true;
@@ -168,24 +162,14 @@ namespace SteeringCS.util.Graph
         /*----------------------------------------------------------------*/
         public void Spacial_partitioning_subscribe()
         {
-            double amount_of_cells = Math.Ceiling((currentWorld.Width / size_of_partitioning) * (currentWorld.Height / size_of_partitioning));
-            for (double i = 0; i < amount_of_cells; i++)
-            {
-                spatial_partitioning.Add(i, new List<Node>());
-            }
-
             if (nodeMap.Count < 0) throw new Exception("Graph is empty");
             foreach (KeyValuePair<string, Node> key in nodeMap)
             {
-                if (spatial_partitioning.ContainsKey(Math.Floor((key.Value.position_of_node.X / size_of_partitioning)
-                    * (key.Value.position_of_node.Y / size_of_partitioning))))
+                if (spatial_partitioning.Contains_key_node(key.Value))
                 {
-                    spatial_partitioning[Math.Floor((key.Value.position_of_node.X / size_of_partitioning) * (key.Value.position_of_node.Y / size_of_partitioning))].Add(
-                            key.Value
-                        );
+                    spatial_partitioning.Add_node(key.Value);
                 }
-                else throw new Exception("key not found: " + (key.Value.position_of_node.X / size_of_partitioning)
-                    * (key.Value.position_of_node.Y / size_of_partitioning));
+                else throw new Exception("key not found: " + (Graph.ID_generator(key.Value)));
             }
         }
     }

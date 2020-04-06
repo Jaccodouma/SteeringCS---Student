@@ -35,6 +35,11 @@ namespace SteeringCS.util.Graph
         /*------------------------------------------------------------------------------------------*/
         /*Constructors------------------------------------------------------------------------------*/
         /*------------------------------------------------------------------------------------------*/
+        public Path_planning(World world)
+        {
+            this.owner = null;
+            this.currentGraph = world.navigation_graph;
+        }
         public Path_planning(BaseGameEntity owner)
         {
             this.owner = owner;
@@ -51,16 +56,15 @@ namespace SteeringCS.util.Graph
         {
             double closest_distace = currentGraph.INFINITY;
             Vector2D closest_node = new Vector2D(currentGraph.INFINITY, currentGraph.INFINITY);
-            int partition_cell = (int)Math.Floor((position.X / currentGraph.size_of_partitioning)
-                * (position.Y / currentGraph.size_of_partitioning));
+            int cell = currentGraph.spatial_partitioning.Cell_position_generation(position);
 
-            if (!currentGraph.spatial_partitioning.ContainsKey(partition_cell))
+            if (cell > currentGraph.spatial_partitioning.amount_cells)
                 return closest_node_found.no_closest_node_found.ToString();
-            if (currentGraph.spatial_partitioning[partition_cell].Count < 0)
+            if (currentGraph.spatial_partitioning.GetCell(cell).Count < 0)
                 return closest_node_found.no_closest_node_found.ToString();
 
 
-            foreach (Node node in currentGraph.spatial_partitioning[partition_cell])
+            foreach (Node node in currentGraph.spatial_partitioning.GetCell(cell).Values)
             {
                 if (position.VectorDistance(node.position_of_node.Clone()) < closest_distace)
                 {
@@ -70,7 +74,7 @@ namespace SteeringCS.util.Graph
             }
             if (closest_node.X != currentGraph.INFINITY && closest_node.Y != currentGraph.INFINITY)
             {
-                return currentGraph.ID_generator(closest_node.X, closest_node.Y);
+                return Graph.ID_generator(closest_node.X, closest_node.Y);
             }
 
             return closest_node_found.no_closest_node_found.ToString();

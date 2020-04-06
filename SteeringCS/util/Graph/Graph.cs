@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Priority_Queue;
+using SteeringCS.util.Data;
 
 namespace SteeringCS.util.Graph
 {
@@ -12,10 +13,7 @@ namespace SteeringCS.util.Graph
         public double INFINITY = double.PositiveInfinity;
         public double graining;
         public Dictionary<string, Node> nodeMap = new Dictionary<string, Node>();
-
-        //Vars for spacial partitioning
-        public Dictionary<double, List<Node>> spatial_partitioning;
-        public double size_of_partitioning = 100;
+        public Cellspace_partitioning spatial_partitioning;
 
         /*------------------------------------------------------------------------------------------*/
         /*Constructors------------------------------------------------------------------------------*/
@@ -77,32 +75,32 @@ namespace SteeringCS.util.Graph
                 node.Value.heuristic_euclidean = INFINITY;
             }
         }
-        public string ID_generator(double x, double y)
+        static public string ID_generator(double x, double y)
         {
             return x.ToString() + "," + y.ToString();
         }
 
-        public string ID_generator(double x, double y, double offset_x, double offset_y)
+        static public string ID_generator(double x, double y, double offset_x, double offset_y)
         {
             return (x + offset_x).ToString() + "," + (y + offset_y).ToString();
         }
 
-        public string ID_generator(Node node)
+        static public string ID_generator(Node node)
         {
             return node.position_of_node.X.ToString() + "," + node.position_of_node.Y.ToString();
         }
 
-        public string ID_generator(Node node, double offset_x, double offset_y)
+        static public string ID_generator(Node node, double offset_x, double offset_y)
         {
             return (node.position_of_node.X + offset_x).ToString() + "," + (node.position_of_node.Y + offset_y).ToString();
         }
 
-        public string ID_generator(Vector2D node)
+        static public string ID_generator(Vector2D node)
         {
             return node.X.ToString() + "," + node.Y.ToString();
         }
 
-        public string ID_generator(Vector2D node, double offset_x, double offset_y)
+        static public string ID_generator(Vector2D node, double offset_x, double offset_y)
         {
             return (node.X + offset_x).ToString() + "," + (node.Y + offset_y).ToString();
         }

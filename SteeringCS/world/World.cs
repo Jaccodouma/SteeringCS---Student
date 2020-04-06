@@ -8,11 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SteeringCS.util.Graph;
+using SteeringCS.util.Data;
 
 namespace SteeringCS
 {
     class World
     {
+        public Cellspace_partitioning partitioning;
         public Navigation_Graph navigation_graph;
         private double graining = 20; //distance between nodes in floodfill
         public Path_planning path_Planning;
@@ -32,11 +34,9 @@ namespace SteeringCS
             Height = h;
             //obstacles init
             populate();
-            navigation_graph = new Navigation_Graph(this, graining);
-            navigation_graph.Flood_fill();
-            navigation_graph.Spacial_partitioning_subscribe();
-            path_Planning = new Path_planning(new Vehicle(new Vector2D(100,100), this));
-            
+            partitioning = new Cellspace_partitioning(this, 10, 10, 100);
+            navigation_graph = new Navigation_Graph(this, graining, partitioning);
+            path_Planning = new Path_planning(this);
         }
 
         private void populate()
@@ -46,7 +46,7 @@ namespace SteeringCS
             Target.Pos = new Vector2D(100, 40);
 
             for (int i = 0; i < 20; i++)
-                addEntity(rnd.Next(0,Width),rnd.Next(0,Height));
+                addEntity(rnd.Next(0, Width), rnd.Next(0, Height));
         }
 
         public void Update(float timeElapsed)
@@ -54,7 +54,7 @@ namespace SteeringCS
             foreach (MovingEntity me in entities)
             {
                 me.Update(timeElapsed);
-            } 
+            }
             while (newEntities.Count > 0)
             {
                 entities.Add(newEntities.Dequeue());
@@ -71,7 +71,7 @@ namespace SteeringCS
                     Math.Pow(Math.Abs(y - me.Pos.Y), 2) < Math.Pow(10, 2)
                 )
                 {
-                    this.selectedEntity = me; 
+                    this.selectedEntity = me;
                 }
             }
         }
@@ -81,6 +81,11 @@ namespace SteeringCS
             if (navigation_graph != null)
             {
                 navigation_graph.Render(g);
+            }
+
+            if (partitioning != null)
+            {
+                partitioning.Render(g);
             }
 
             entities.ForEach(e =>

@@ -74,6 +74,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="behaviour\SteeringBehaviour.cs" />
     <Compile Include="util\Data\Enums.cs" />
+    <Compile Include="util\Data\Cellspace_partitioning.cs" />
     <Compile Include="util\Graph\Edge.cs" />
     <Compile Include="util\Graph\Graph.cs" />
     <Compile Include="util\Graph\Navigation_Graph.cs" />
