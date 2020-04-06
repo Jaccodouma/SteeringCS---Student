@@ -50,7 +50,7 @@ namespace SteeringCS.util.Graph
 
         private void _Flood_fill(double x, double y, string old)
         {
-            string position = x.ToString() + "," + y.ToString();
+            string position = ID_generator(x, y);
             if (x < 0 + graining / 2 || y < 0 + graining / 2 || x > currentWorld.Width - graining / 2 || y > currentWorld.Height - graining / 2
                 || nodeMap.ContainsKey(position))
             {
@@ -69,49 +69,49 @@ namespace SteeringCS.util.Graph
 
             //check if edge already exists
             //edge x+graining, y - right
-            string adjecent = (x + graining).ToString() + "," + y.ToString();
+            string adjecent = ID_generator(x, y, +graining, 0);
             if (!nodeMap[position].adjecent_edges.ContainsKey(adjecent) && nodeMap.ContainsKey(adjecent))
             {
                 nodeMap[position].adjecent_edges.Add(adjecent, new Edge(nodeMap[position], nodeMap[adjecent]));
             }
             //edge x-graining, y - left
-            adjecent = (x - graining).ToString() + "," + y.ToString();
+            adjecent = ID_generator(x, y, -graining, 0);
             if (!nodeMap[position].adjecent_edges.ContainsKey(adjecent) && nodeMap.ContainsKey(adjecent))
             {
                 nodeMap[position].adjecent_edges.Add(adjecent, new Edge(nodeMap[position], nodeMap[adjecent]));
             }
             //edge x, y+graining - down 
-            adjecent = x.ToString() + "," + (y + graining).ToString();
+            adjecent = ID_generator(x, y, 0, +graining);
             if (!nodeMap[position].adjecent_edges.ContainsKey(adjecent) && nodeMap.ContainsKey(adjecent))
             {
                 nodeMap[position].adjecent_edges.Add(adjecent, new Edge(nodeMap[position], nodeMap[adjecent]));
             }
             //edge x, y-graining - up
-            adjecent = x.ToString() + "," + (y - graining).ToString();
+            adjecent = ID_generator(x, y, 0, -graining);
             if (!nodeMap[position].adjecent_edges.ContainsKey(adjecent) && nodeMap.ContainsKey(adjecent))
             {
                 nodeMap[position].adjecent_edges.Add(adjecent, new Edge(nodeMap[position], nodeMap[adjecent]));
             }
             //edge x-graining, y-graining - upper left
-            adjecent = (x - graining).ToString() + "," + (y - graining).ToString();
+            adjecent = ID_generator(x, y, -graining, -graining);
             if (!nodeMap[position].adjecent_edges.ContainsKey(adjecent) && nodeMap.ContainsKey(adjecent))
             {
                 nodeMap[position].adjecent_edges.Add(adjecent, new Edge(nodeMap[position], nodeMap[adjecent]));
             }
             //edge x+graining, y-graining - upper right
-            adjecent = (x + graining).ToString() + "," + (y - graining).ToString();
+            adjecent = ID_generator(x, y, +graining, -graining);
             if (!nodeMap[position].adjecent_edges.ContainsKey(adjecent) && nodeMap.ContainsKey(adjecent))
             {
                 nodeMap[position].adjecent_edges.Add(adjecent, new Edge(nodeMap[position], nodeMap[adjecent]));
             }
             //edge x-graining, y+graining - bottom left
-            adjecent = (x - graining).ToString() + "," + (y + graining).ToString();
+            adjecent = ID_generator(x, y, -graining, +graining);
             if (!nodeMap[position].adjecent_edges.ContainsKey(adjecent) && nodeMap.ContainsKey(adjecent))
             {
                 nodeMap[position].adjecent_edges.Add(adjecent, new Edge(nodeMap[position], nodeMap[adjecent]));
             }
             //edge x-graining, y-graining - bottom right
-            adjecent = (x + graining).ToString() + "," + (y + graining).ToString();
+            adjecent = ID_generator(x, y, +graining, +graining);
             if (!nodeMap[position].adjecent_edges.ContainsKey(adjecent) && nodeMap.ContainsKey(adjecent))
             {
                 nodeMap[position].adjecent_edges.Add(adjecent, new Edge(nodeMap[position], nodeMap[adjecent]));

@@ -27,9 +27,9 @@ namespace SteeringCS.util.Graph
         /*----------------------------------------------------------------*/
         /*Constructors----------------------------------------------------*/
         /*----------------------------------------------------------------*/
-        public Node(Vector2D position)
+        public Node(Vector2D position, string id)
         {
-            this.id = position.X + "," + position.Y;
+            this.id = id;
             this.adjecent_edges = new Dictionary<string, Edge>();
             this.position_of_node = position;
 

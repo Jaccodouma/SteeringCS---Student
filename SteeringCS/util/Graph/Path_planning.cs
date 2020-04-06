@@ -70,7 +70,7 @@ namespace SteeringCS.util.Graph
             }
             if (closest_node.X != currentGraph.INFINITY && closest_node.Y != currentGraph.INFINITY)
             {
-                return closest_node.X.ToString() + "," + closest_node.Y.ToString();
+                return currentGraph.ID_generator(closest_node.X, closest_node.Y);
             }
 
             return closest_node_found.no_closest_node_found.ToString();
@@ -100,15 +100,23 @@ namespace SteeringCS.util.Graph
                 path.Add(owner.Pos.Clone());
                 Breath_first_search_fast(path, closest_node_to_owner, closest_node_to_target);
                 path.Add(destination_position.Clone());
+
             }
             if (algorithm == kind_of_algorithm.DK)
             {
+                path.Add(destination_position.Clone());
                 Dijkstra_fast(path, closest_node_to_owner, closest_node_to_target);
+                path.Add(owner.Pos.Clone());
+                path.Reverse();
             }
             if (algorithm == kind_of_algorithm.AS)
             {
+                path.Add(destination_position.Clone());
                 A_star(path, closest_node_to_owner, closest_node_to_target);
+                path.Add(owner.Pos.Clone());
+                path.Reverse();
             }
+
             Render_path(g, path, algorithm);
             return true;
         }
@@ -222,32 +230,102 @@ namespace SteeringCS.util.Graph
         /*----------------------------------------------------------------*/
         public List<Vector2D> A_star(List<Vector2D> path, string start_node, string destination)
         {
-            throw new NotImplementedException();
+            FastPriorityQueue<Node> queue_fast = new FastPriorityQueue<Node>(currentGraph.nodeMap.Count + 1);
+            Node iterator = currentGraph.nodeMap[start_node];
+
+            iterator.shortest_distance_to_dest = 0;
+            queue_fast.Enqueue(iterator, (float)iterator.heuristic_euclidean);
+
+            while (queue_fast.Count > 0)
+            {
+                iterator = queue_fast.Dequeue();
+
+                if (iterator.handled_node)
+                {
+                    continue;
+                }
+                iterator.handled_node = true;
+
+                foreach (KeyValuePair<string, Edge> node in iterator.adjecent_edges)
+                {
+                    node.Value.destination.heuristic_euclidean = currentGraph.nodeMap[destination].position_of_node.Clone()
+                        .VectorDistance(currentGraph.nodeMap[node.Value.destination.id].position_of_node.Clone());
+
+                    if (!node.Value.destination.handled_node)
+                    {
+                        if (iterator.shortest_distance_to_dest + iterator.position_of_node.Clone().VectorDistance(node.Value.destination.position_of_node.Clone())
+                            < node.Value.destination.shortest_distance_to_dest)
+                        {
+                            node.Value.destination.shortest_distance_to_dest =
+                                 iterator.shortest_distance_to_dest
+                                 + iterator.position_of_node.Clone().VectorDistance(node.Value.destination.position_of_node.Clone())
+                                 + node.Value.destination.heuristic_euclidean;
+                            node.Value.destination.previous_node_shortest_path = iterator;
+                        }
+                        if (queue_fast.Contains(node.Value.destination))
+                        {
+                            IEnumerator<Node> enumerator = queue_fast.GetEnumerator();
+                            enumerator.Reset();
+                            enumerator.MoveNext();
+                            while (enumerator.Current != node.Value.destination)
+                            {
+                                enumerator.MoveNext();
+                            }
+                            if (enumerator.Current.Priority > node.Value.destination.shortest_distance_to_dest)
+                            {
+                                queue_fast.UpdatePriority(node.Value.destination, (float)node.Value.destination.shortest_distance_to_dest);
+                            }
+                        }
+                        else
+                        {
+                            queue_fast.Enqueue(node.Value.destination, (float)node.Value.destination.heuristic_euclidean);
+                        }
+                    }
+                }
+            }
+
+            iterator = currentGraph.nodeMap[destination];
+            while (iterator != null)
+            {
+                path.Add(iterator.position_of_node.Clone());
+                iterator = iterator.previous_node_shortest_path;
+            }
+            return path;
         }
 
         public void Render_path(Graphics g, List<Vector2D> path, kind_of_algorithm algorithm)
         {
-            Pen pen = new Pen(Color.YellowGreen);
+            Pen pen = new Pen(Color.Aqua);
+            Brush brush = new SolidBrush(Color.Aqua);
             if (algorithm == kind_of_algorithm.BF)
             {
                 pen = new Pen(Color.Red);
                 pen.Width = 3;
+                brush = new SolidBrush(Color.Black);
             }
             if (algorithm == kind_of_algorithm.DK)
             {
                 pen = new Pen(Color.Blue);
                 pen.Width = 3;
+                brush = new SolidBrush(Color.Yellow);
             }
             if (algorithm == kind_of_algorithm.AS)
             {
-                pen = new Pen(Color.Purple);
+                pen = new Pen(Color.ForestGreen);
+                pen.Width = 3;
+                brush = new SolidBrush(Color.Purple);
             }
 
             for (int i = 0; i < path.Count - 1; i++)
             {
                 g.DrawLine(pen, (float)path[i].X, (float)path[i].Y, (float)path[i + 1].X, (float)path[i + 1].Y);
-            }
 
+
+            }
+            for (int i = 0; i < path.Count - 1; i++)
+            {
+                g.FillEllipse(brush, (float)path[i + 1].X-4, (float)path[i + 1].Y-4, 8, 8);
+            }
         }
     }
 }

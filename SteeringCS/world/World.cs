@@ -98,6 +98,7 @@ namespace SteeringCS
                     path_Planning.owner = selectedEntity;
                     path_Planning.Create_path_to_position(new Vector2D(200, 200), new List<Vector2D>(), Path_planning.kind_of_algorithm.BF, g);
                     path_Planning.Create_path_to_position(new Vector2D(200, 200), new List<Vector2D>(), Path_planning.kind_of_algorithm.DK, g);
+                    path_Planning.Create_path_to_position(new Vector2D(200, 200), new List<Vector2D>(), Path_planning.kind_of_algorithm.AS, g);
                 }
             }
 
