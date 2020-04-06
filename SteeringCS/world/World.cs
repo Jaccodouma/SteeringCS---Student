@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SteeringCS.util.Graph;
 using SteeringCS.util.Data;
+using SteeringCS.entity.turrets;
 
 namespace SteeringCS
 {
@@ -19,59 +20,60 @@ namespace SteeringCS
         private double graining = 20; //distance between nodes in floodfill
         public Path_planning path_Planning;
 
-        private List<MovingEntity> entities = new List<MovingEntity>();
-        private Queue<MovingEntity> newEntities = new Queue<MovingEntity>();
-        public Target Target { get; set; }
         public MovingEntity selectedEntity { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
 
         public Random rnd = new Random();
 
+        public float time; 
+
         public World(int w, int h)
         {
             Width = w;
             Height = h;
+
             //obstacles init
-            populate();
             partitioning = new Cellspace_partitioning(this, 10, 10, 100);
             navigation_graph = new Navigation_Graph(this, graining, partitioning);
             path_Planning = new Path_planning(this);
-        }
+            
+            time = 0;
 
-        private void populate()
-        {
-            Target = new Target(new Vector2D(100, 60), this);
-            Target.VColor = Color.DarkRed;
-            Target.Pos = new Vector2D(100, 40);
+            Base bse = new Base(new Vector2D(Width / 2, Height / 2), this);
 
             for (int i = 0; i < 20; i++)
-                addEntity(rnd.Next(0, Width), rnd.Next(0, Height));
+            {
+                Zombie z = addZombie(rnd.Next(0, Width), rnd.Next(0, Height));
+                SeekBehaviour b = new SeekBehaviour(z, bse);
+                z.SteeringBehaviours.Add(b);
+            }
         }
 
         public void Update(float timeElapsed)
         {
-            foreach (MovingEntity me in entities)
+            time += timeElapsed;
+
+            foreach (BaseGameEntity e in BaseGameEntity.baseGameEntities.ToList())
             {
-                me.Update(timeElapsed);
-            }
-            while (newEntities.Count > 0)
-            {
-                entities.Add(newEntities.Dequeue());
+                e.Update(timeElapsed);
             }
         }
 
         internal void selectEntity(int x, int y)
         {
             this.selectedEntity = null;
-            foreach (MovingEntity me in entities)
+            foreach (BaseGameEntity e in BaseGameEntity.baseGameEntities.ToList())
             {
-                if (
-                    Math.Pow(Math.Abs(x - me.Pos.X), 2) +
-                    Math.Pow(Math.Abs(y - me.Pos.Y), 2) < Math.Pow(10, 2)
-                )
+                if (e is MovingEntity)
                 {
-                    this.selectedEntity = me;
+                    if (
+                        Math.Pow(Math.Abs(x - e.Pos.X), 2) +
+                        Math.Pow(Math.Abs(y - e.Pos.Y), 2) < Math.Pow(10, 2)
+                    )
+                    {
+                        this.selectedEntity = (MovingEntity) e;
+                    }
                 }
             }
         }
@@ -88,11 +90,11 @@ namespace SteeringCS
                 partitioning.Render(g);
             }
 
-            entities.ForEach(e =>
+            BaseGameEntity.baseGameEntities.ToList().ForEach(e =>
             {
                 e.Render(g);
             });
-            Target.Render(g);
+
             if (selectedEntity != null)
             {
                 selectedEntity.RenderDebug(g);
@@ -106,31 +108,21 @@ namespace SteeringCS
                     path_Planning.Create_path_to_position(new Vector2D(200, 200), new List<Vector2D>(), Path_planning.kind_of_algorithm.AS, g);
                 }
             }
+            if (navigation_graph != null)
+            {
+                navigation_graph.Render(g);
+            }
 
         }
 
-        public void addEntity(int x, int y)
+        public Zombie addZombie(int x, int y)
         {
-            Vehicle v = new Vehicle(new Vector2D(x, y), this);
-            //v.VColor = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-            v.VColor = Color.Blue;
+            return new Zombie(new Vector2D(x, y), this);
+        }
 
-            //SteeringBehaviour arr = new ArriveBehaviour(v, Target, Deceleration.slow);
-            //v.SteeringBehaviours.Add(arr);
-            SteeringBehaviour seek = new SeekBehaviour(v, Target);
-            //seek.weight = 2;
-            v.SteeringBehaviours.Add(seek);
-
-            SteeringBehaviour coh = new Group_CohesionBehaviour(v, entities);
-            v.SteeringBehaviours.Add(coh);
-
-            SteeringBehaviour sep = new Group_SeperationBehaviour(v, entities);
-            v.SteeringBehaviours.Add(sep);
-
-            SteeringBehaviour wander = new WanderBehaviour(v, 70, 50, 10);
-            v.SteeringBehaviours.Add(wander);
-
-            newEntities.Enqueue(v);
+        public void addTurret(int x, int y)
+        {
+            new BasicTurret(new Vector2D(x, y), this);
         }
     }
 }

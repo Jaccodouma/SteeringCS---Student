@@ -10,10 +10,10 @@ namespace SteeringCS.behaviour
 {
     class Group_CohesionBehaviour : SteeringBehaviour
     {
-        public List<MovingEntity> targets { get; set; }
-        public double neighbourhoodRadius { get; set; }
+        public List<BaseGameEntity> targets { get; set; }
+        public double neighbourhoodRadius;
 
-        public Group_CohesionBehaviour(MovingEntity me, List<MovingEntity> targets) : base(me)
+        public Group_CohesionBehaviour(MovingEntity me, List<BaseGameEntity> targets) : base(me)
         {
             this.targets = targets;
             this.neighbourhoodRadius = 40;
@@ -26,7 +26,7 @@ namespace SteeringCS.behaviour
             Vector2D CenterOfMass = new Vector2D();
             Vector2D SteeringForce = new Vector2D();
             int neighbourCount = 0;
-            foreach (BaseGameEntity target in targets)
+            foreach (BaseGameEntity target in targets.ToList())
             {
                 if ((target.Pos - ME.Pos).Length() < neighbourhoodRadius && target != ME)
                 {

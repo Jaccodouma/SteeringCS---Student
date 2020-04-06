@@ -1,9 +1,12 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace SteeringCS
 {
     abstract class BaseGameEntity
     {
+        public static List<BaseGameEntity> baseGameEntities = new List<BaseGameEntity>();
         public Vector2D Pos { get; set; }
         private Vector2D _Dir;
         public Vector2D Dir
@@ -24,8 +27,10 @@ namespace SteeringCS
         public BaseGameEntity(Vector2D pos, World w)
         {
             Pos = pos;
-            _Dir = new Vector2D(0,0);
+            _Dir = new Vector2D(0,-1).Normalize();
             MyWorld = w;
+
+            baseGameEntities.Add(this);
         }
 
         public abstract void Update(float delta);
@@ -38,5 +43,10 @@ namespace SteeringCS
         public virtual void RenderDebug(Graphics g) { }
 
         public virtual void RenderDebugPanel(Graphics g, DBPanel p) { }
+
+        public void Delete()
+        {
+            baseGameEntities.Remove(this);
+        }
     }
 }

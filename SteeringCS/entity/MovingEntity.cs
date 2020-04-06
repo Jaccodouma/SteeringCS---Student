@@ -9,6 +9,7 @@ namespace SteeringCS.entity
 {
     abstract class MovingEntity : BaseGameEntity
     {
+        public static List<MovingEntity> movingEntities = new List<MovingEntity>();
         public Vector2D Velocity { get; set; }
         public float Mass { get; set; }
         public float MaxSpeed { get; set; }
@@ -21,6 +22,7 @@ namespace SteeringCS.entity
             MaxSpeed = 50;
             Velocity = new Vector2D();
             SteeringBehaviours = new List<SteeringBehaviour>();
+            movingEntities.Add(this);
         }
 
         public override void Update(float timeElapsed)
@@ -47,9 +49,6 @@ namespace SteeringCS.entity
                     // Update heading (it normalises in the setter)
                     Dir = Velocity;
                 }
-            } else
-            {
-                Console.WriteLine("WARNING: MovingEntity doesn't have SteeringBehavior!");
             }
         }
 
@@ -77,5 +76,11 @@ namespace SteeringCS.entity
         }
 
         public override void RenderDebug(Graphics g) { }
+
+        public new void Delete()
+        {
+            movingEntities.Remove(this);
+            base.Delete();
+        }
     }
 }

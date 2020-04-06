@@ -129,8 +129,8 @@ namespace SteeringCS.util.Graph
         {
             if (already_rendered) return;
 
-            Brush brush = new SolidBrush(Color.Gray);
-            Pen pen = new Pen(Color.Gray, 2);
+            Brush brush = new SolidBrush(Color.FromArgb(10,100,100,100));
+            Pen pen = new Pen(Color.FromArgb(10,0,0,0), 1);
             foreach (KeyValuePair<string, Node> node in nodeMap)
             {
                 g.FillEllipse(
