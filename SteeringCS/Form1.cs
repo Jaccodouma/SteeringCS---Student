@@ -103,7 +103,7 @@ namespace SteeringCS
         {
             if (e.Button == MouseButtons.Left)
             {
-                world.Target.Pos = new Vector2D(e.X, e.Y);
+                //world.target.Pos = new Vector2D(e.X, e.Y);
                 world.addTurret(e.X, e.Y);
             } else if (e.Button == MouseButtons.Right)
             {

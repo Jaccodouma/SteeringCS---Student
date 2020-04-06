@@ -61,9 +61,11 @@
     <Compile Include="DBPanel.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="entity\turrets\Base.cs" />
+    <Compile Include="entity\turrets\BasicTurret.cs" />
     <Compile Include="entity\MovingEntity.cs" />
     <Compile Include="entity\Target.cs" />
-    <Compile Include="entity\Turret.cs" />
+    <Compile Include="entity\turrets\TurretBase.cs" />
     <Compile Include="entity\Zombie.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

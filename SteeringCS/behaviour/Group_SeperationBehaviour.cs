@@ -10,10 +10,10 @@ namespace SteeringCS.behaviour
 {
     class Group_SeperationBehaviour : SteeringBehaviour
     {
-        public List<MovingEntity> targets { get; set; }
+        public List<BaseGameEntity> targets { get; set; }
         public double neighbourhoodRadius { get; set; }
 
-        public Group_SeperationBehaviour(MovingEntity me, List<MovingEntity> targets) : base(me)
+        public Group_SeperationBehaviour(MovingEntity me, List<BaseGameEntity> targets) : base(me)
         {
             this.targets = targets;
             this.neighbourhoodRadius = 40;

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SteeringCS.util.Graph;
+using SteeringCS.entity.turrets;
 
 namespace SteeringCS
 {
@@ -16,13 +17,6 @@ namespace SteeringCS
         private Navigation_Graph navigation_graph;
         private double graining = 50;
 
-        private List<BaseGameEntity> entities = new List<BaseGameEntity>();
-        private Queue<BaseGameEntity> newEntities = new Queue<BaseGameEntity>();
-        private Queue<BaseGameEntity> removeEntities = new Queue<BaseGameEntity>();
-
-        private List<MovingEntity> zombies = new List<MovingEntity>();
-
-        public Target Target { get; set; }
         public MovingEntity selectedEntity { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
@@ -31,73 +25,48 @@ namespace SteeringCS
 
         public float time; 
 
-        public void removeEntity(BaseGameEntity e)
-        {
-            this.removeEntities.Enqueue(e);
-            if (e is Zombie)
-            {
-                zombies.Remove((Zombie) e);
-            }
-        }
-
         public World(int w, int h)
         {
             Width = w;
             Height = h;
-            time = 0; 
+            time = 0;
 
-            //obstacles init
-            populate();
-            navigation_graph = new Navigation_Graph(this, graining);
-            navigation_graph.Flood_fill();
-        }
-
-        public List<MovingEntity> getZombies()
-        {
-            return this.zombies;
-        }
-
-        private void populate()
-        {
-            Target = new Target(new Vector2D(100, 60), this);
-            Target.VColor = Color.DarkRed;
-            Target.Pos = new Vector2D(100, 40);
+            Base bse = new Base(new Vector2D(Width / 2, Height / 2), this);
 
             for (int i = 0; i < 20; i++)
-                addZombie(rnd.Next(0,Width),rnd.Next(0,Height));
+            {
+                Zombie z = addZombie(rnd.Next(0, Width), rnd.Next(0, Height));
+                SeekBehaviour b = new SeekBehaviour(z, bse);
+                z.SteeringBehaviours.Add(b);
+            }
+
+            navigation_graph = new Navigation_Graph(this, graining);
+            navigation_graph.Flood_fill();
         }
 
         public void Update(float timeElapsed)
         {
             time += timeElapsed;
 
-            foreach (BaseGameEntity me in entities)
+            foreach (BaseGameEntity e in BaseGameEntity.baseGameEntities.ToList())
             {
-                me.Update(timeElapsed);
-            } 
-            while (newEntities.Count > 0)
-            {
-                entities.Add(newEntities.Dequeue());
-            }
-            while (removeEntities.Count > 0)
-            {
-                entities.Remove(removeEntities.Dequeue());
+                e.Update(timeElapsed);
             }
         }
 
         internal void selectEntity(int x, int y)
         {
             this.selectedEntity = null;
-            foreach (BaseGameEntity me in entities)
+            foreach (BaseGameEntity e in BaseGameEntity.baseGameEntities.ToList())
             {
-                if (me is MovingEntity)
+                if (e is MovingEntity)
                 {
                     if (
-                        Math.Pow(Math.Abs(x - me.Pos.X), 2) +
-                        Math.Pow(Math.Abs(y - me.Pos.Y), 2) < Math.Pow(10, 2)
+                        Math.Pow(Math.Abs(x - e.Pos.X), 2) +
+                        Math.Pow(Math.Abs(y - e.Pos.Y), 2) < Math.Pow(10, 2)
                     )
                     {
-                        this.selectedEntity = (MovingEntity) me;
+                        this.selectedEntity = (MovingEntity) e;
                     }
                 }
             }
@@ -105,52 +74,32 @@ namespace SteeringCS
 
         public void Render(Graphics g)
         {
-            entities.ForEach(e =>
+
+            BaseGameEntity.baseGameEntities.ToList().ForEach(e =>
             {
                 e.Render(g);
             });
-            Target.Render(g);
+
             if (selectedEntity != null)
             {
                 selectedEntity.RenderDebug(g);
                 selectedEntity.SteeringBehaviours.ForEach(sb => sb.Render(g));
             }
 
-            if(navigation_graph != null)
+            if (navigation_graph != null)
             {
                 navigation_graph.Render(g);
             }
         }
 
-        public void addZombie(int x, int y)
+        public Zombie addZombie(int x, int y)
         {
-            Zombie v = new Zombie(new Vector2D(x, y), this);
-            //v.VColor = Color.FromArgb(rnd.Next(256), rnd.Next(256), rnd.Next(256));
-            v.VColor = Color.DarkGreen;
-
-            //SteeringBehaviour arr = new ArriveBehaviour(v, Target, Deceleration.slow);
-            //v.SteeringBehaviours.Add(arr);
-            SteeringBehaviour seek = new SeekBehaviour(v, Target);
-            seek.weight = 2;
-            v.SteeringBehaviours.Add(seek);
-
-            SteeringBehaviour coh = new Group_CohesionBehaviour(v, zombies);
-            v.SteeringBehaviours.Add(coh);
-
-            SteeringBehaviour sep = new Group_SeperationBehaviour(v, zombies);
-            v.SteeringBehaviours.Add(sep);
-
-            SteeringBehaviour wander = new WanderBehaviour(v, 70, 50, 10);
-            v.SteeringBehaviours.Add(wander);
-
-            newEntities.Enqueue(v);
-            zombies.Add(v);
+            return new Zombie(new Vector2D(x, y), this);
         }
 
         public void addTurret(int x, int y)
         {
-            Turret t = new Turret(new Vector2D(x, y), this);
-            newEntities.Enqueue(t);
+            new BasicTurret(new Vector2D(x, y), this);
         }
     }
 }

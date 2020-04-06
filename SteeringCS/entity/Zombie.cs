@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SteeringCS.behaviour;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -9,6 +10,8 @@ namespace SteeringCS.entity
 {
     class Zombie : MovingEntity
     {
+        public static List<BaseGameEntity> zombies = new List<BaseGameEntity>();
+
         public Color VColor { get; set; }
         private double health; 
         private double maxHealth = 100;
@@ -20,7 +23,22 @@ namespace SteeringCS.entity
             Scale = 5;
             health = 100;
 
-            VColor = Color.Black;
+            VColor = Color.DarkGreen;
+
+            Group_CohesionBehaviour coh = new Group_CohesionBehaviour(this, Zombie.zombies);
+            SteeringBehaviours.Add(coh);
+
+            Group_SeperationBehaviour sep = new Group_SeperationBehaviour(this, Zombie.zombies);
+            SteeringBehaviours.Add(sep);
+
+            WanderBehaviour wander = new WanderBehaviour(this, 70, 50, 10);
+            SteeringBehaviours.Add(wander);
+
+            Group_CohesionBehaviour findTurret = new Group_CohesionBehaviour(this, TurretBase.turrets);
+            findTurret.neighbourhoodRadius = 150;
+            SteeringBehaviours.Add(findTurret);
+
+            zombies.Add(this);
         }
         
         public override void Render(Graphics g)
@@ -99,8 +117,15 @@ namespace SteeringCS.entity
             if (health < 0)
             {
                 // Delete
-                this.MyWorld.removeEntity(this);
+                //this.MyWorld.removeEntity(this);
+                Delete();
             }
+        }
+
+        public new void Delete()
+        {
+            zombies.Remove(this);
+            base.Delete();
         }
     }
 }

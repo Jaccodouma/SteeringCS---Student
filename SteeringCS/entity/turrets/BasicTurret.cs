@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SteeringCS.entity
 {
-    class Turret : BaseGameEntity
+    class BasicTurret : TurretBase
     {
         private int size = 20;
-        private int range = 100; 
+        private int range = 100;
         private Zombie target;
         private int checkInterval = 10;
         private int currentCheck = 0;
         private float timeBetweenShots = 10;
         private float nextShotTime = 0;
 
-        public Turret(Vector2D pos, World w) : base(pos, w) { }
+
+        public BasicTurret(Vector2D pos, World w) : base(pos, w) { }
 
         public override void Update(float delta)
         {
@@ -25,7 +23,7 @@ namespace SteeringCS.entity
             {
                 // Find nearest zombie
                 // TODO: REPLACE WITH FUZZY LOGIC
-                List<MovingEntity> zombies = this.MyWorld.getZombies();
+                List<BaseGameEntity> zombies = Zombie.zombies;
                 Zombie nearestZombie = null;
                 Vector2D nearestZombieDistance = new Vector2D(range, range);
 
@@ -33,7 +31,7 @@ namespace SteeringCS.entity
                 {
                     Vector2D distance = z.Pos - this.Pos;
                     double len = distance.LengthSquared();
-                    if (len < nearestZombieDistance.LengthSquared() && len < Math.Pow(range,2))
+                    if (len < nearestZombieDistance.LengthSquared() && len < Math.Pow(range, 2))
                     {
                         nearestZombie = (Zombie)z;
                         nearestZombieDistance = distance;
@@ -44,7 +42,8 @@ namespace SteeringCS.entity
                 if (nearestZombie != null)
                 {
                     target = nearestZombie;
-                } else
+                }
+                else
                 {
                     target = null; // Set target to null if out of range too
                 }
@@ -63,7 +62,8 @@ namespace SteeringCS.entity
                     target.doDamage(10);
                     nextShotTime += timeBetweenShots;
                 }
-            } else
+            }
+            else
             {
                 // If no target, just rotate as 'scan' 
                 Dir = Dir.Rotate(2);
@@ -72,7 +72,7 @@ namespace SteeringCS.entity
 
         public override void Render(Graphics g)
         {
-            Pen p; 
+            Pen p;
 
             if (target != null)
             {
