@@ -26,7 +26,9 @@ namespace SteeringCS
 
         public Random rnd = new Random();
 
-        public float time; 
+        public float time;
+
+        Base targetBase;
 
         public World(int w, int h)
         {
@@ -40,14 +42,9 @@ namespace SteeringCS
             
             time = 0;
 
-            Base bse = new Base(new Vector2D(Width / 2, Height / 2), this);
+            targetBase = new Base(new Vector2D(Width / 2, Height / 2), this);
 
-            for (int i = 0; i < 20; i++)
-            {
-                Zombie z = addZombie(rnd.Next(0, Width), rnd.Next(0, Height));
-                SeekBehaviour b = new SeekBehaviour(z, bse);
-                z.SteeringBehaviours.Add(b);
-            }
+            addZombies();
         }
 
         public void Update(float timeElapsed)
@@ -118,6 +115,18 @@ namespace SteeringCS
         public Zombie addZombie(int x, int y)
         {
             return new Zombie(new Vector2D(x, y), this);
+        }
+
+        public void addZombies()
+        {
+            if (targetBase == null)
+                return;
+            for (int i = 0; i < 20; i++)
+            {
+                Zombie z = addZombie(rnd.Next(0, Width), rnd.Next(0, Height));
+                SeekBehaviour b = new SeekBehaviour(z, targetBase);
+                z.SteeringBehaviours.Add(b);
+            }
         }
 
         public void addTurret(int x, int y)

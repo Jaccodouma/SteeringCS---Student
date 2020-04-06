@@ -126,5 +126,10 @@ namespace SteeringCS
         {
             this.paused = false; 
         }
+
+        private void btn_spawn_click(object sender, EventArgs e)
+        {
+            world.addZombies();
+        }
     }
 }

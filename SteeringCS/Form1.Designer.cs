@@ -33,6 +33,7 @@
             this.btn_play = new System.Windows.Forms.Button();
             this.dbPanel1 = new SteeringCS.DBPanel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.btn_spawn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btn_Pause
@@ -83,12 +84,23 @@
             this.tabControl1.Size = new System.Drawing.Size(317, 728);
             this.tabControl1.TabIndex = 5;
             // 
+            // btn_spawn
+            // 
+            this.btn_spawn.Location = new System.Drawing.Point(1003, 746);
+            this.btn_spawn.Name = "btn_spawn";
+            this.btn_spawn.Size = new System.Drawing.Size(121, 23);
+            this.btn_spawn.TabIndex = 0;
+            this.btn_spawn.Text = "Spawn zombies";
+            this.btn_spawn.UseVisualStyleBackColor = true;
+            this.btn_spawn.Click += new System.EventHandler(this.btn_spawn_click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1136, 781);
             this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.btn_spawn);
             this.Controls.Add(this.btn_play);
             this.Controls.Add(this.btn_step);
             this.Controls.Add(this.btn_Pause);
@@ -106,6 +118,7 @@
         private System.Windows.Forms.Button btn_step;
         private System.Windows.Forms.Button btn_play;
         private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.Button btn_spawn;
     }
 }
 
