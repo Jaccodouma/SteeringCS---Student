@@ -8,5 +8,12 @@ namespace SteeringCS.FuzzyLogic
 {
     class FuzzyTerm
     {
+        virtual public FuzzyTerm Clone() { return null; }
+
+        virtual public double GetDOM() { return 0; }
+
+        virtual public void ClearDOM() { return; }
+
+        virtual public void ORwithDOM(double val) { return; }
     }
 }

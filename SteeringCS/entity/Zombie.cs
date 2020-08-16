@@ -194,5 +194,6 @@ namespace SteeringCS.entity
             zombies.Remove(this);
             base.Delete();
         }
+
     }
 }

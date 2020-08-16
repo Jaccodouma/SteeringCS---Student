@@ -22,12 +22,13 @@ namespace SteeringCS.FuzzyLogic
 
         virtual public double CalculateDOM(double val)
         {
-            return 0; 
+            return 0;
         }
 
         public void ORwithDOM(double val)
         {
-            this.dom = val;
+            if (val > dom) this.dom = val;
+            Console.WriteLine("dom: " + this.dom);
         }
 
         public double GetRepresentativeVal()
@@ -47,7 +48,11 @@ namespace SteeringCS.FuzzyLogic
 
         public void SetDOM(double val)
         {
-            this.dom = val;
+            if (val <= 1 && val >= 0)
+            {
+                this.dom = val;
+            }
+            else throw new Exception("invalid value");
         }
     }
 }
