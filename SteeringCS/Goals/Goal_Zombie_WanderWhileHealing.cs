@@ -11,7 +11,8 @@ namespace SteeringCS.Goals
     class Goal_Zombie_WanderWhileHealing: Goal
     {
         WanderBehaviour wander;
-        Zombie zombie; 
+        Group_SeperationBehaviour seperate;
+        Zombie zombie;
 
         public Goal_Zombie_WanderWhileHealing(Zombie z)
             : base(z)
@@ -24,17 +25,17 @@ namespace SteeringCS.Goals
             // Add wander behaviour
             wander = new WanderBehaviour(this.movingEntity, 70, 30, 20);
             this.movingEntity.SteeringBehaviours.Add(wander);
+
+            // Add seperation behaviour
+            List<BaseGameEntity> turrets = TurretBase.turrets.ConvertAll(x => (BaseGameEntity)x);
+            seperate = new Group_SeperationBehaviour(this.zombie, turrets);
+            seperate.neighbourhoodRadius = 120;
+            this.movingEntity.SteeringBehaviours.Add(seperate);
+
             this.status = GoalProcess.active;
         }
         public override GoalProcess Process()
         {
-            // if we get close to a turret set status to failed
-            foreach (TurretBase turret in TurretBase.turrets)
-            {
-                double distSqrd = (this.zombie.Pos - turret.Pos).LengthSquared();
-                if (distSqrd > Math.Pow(turret.getRange(), 2)) { this.status = GoalProcess.failed; }
-            }
-
             // if we are full health set status to completed
             if (this.zombie.GetHealth() >= this.zombie.getMaxHealth()) this.status = GoalProcess.completed;
 
@@ -42,9 +43,9 @@ namespace SteeringCS.Goals
         }
         public override void Terminate()
         {
-            // Remove wander behaviour
-            this.status = GoalProcess.completed;
+            // Remove behaviours
             this.movingEntity.SteeringBehaviours.Remove(wander);
+            this.movingEntity.SteeringBehaviours.Remove(seperate);
         }
     }
 }
