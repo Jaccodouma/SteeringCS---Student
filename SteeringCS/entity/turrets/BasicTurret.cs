@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SteeringCS.FuzzyLogic;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -6,6 +7,8 @@ namespace SteeringCS.entity
 {
     class BasicTurret : TurretBase
     {
+        FuzzyModule fm;
+
         private int size = 20;
         private Zombie target;
         private int checkInterval = 10;
@@ -13,7 +16,24 @@ namespace SteeringCS.entity
         private float timeBetweenShots = 10;
         private float nextShotTime = 0;
 
-        public BasicTurret(Vector2D pos, World w) : base(pos, w) { }
+        public BasicTurret(Vector2D pos, World w) : base(pos, w) 
+        {
+            fm = new FuzzyModule();
+            FuzzyVariable distance = fm.CreateFLV("distance");
+            FuzzySet cDistance = distance.AddLeftShoulderSet("c", 0, 2000, 10000);
+            FuzzySet mDistance = distance.AddTriangle("m", 2000, 10000, 18000);
+            FuzzySet fDistance = distance.AddRightShoulderSet("f", 10000, 18000, 20000);
+
+            FuzzyVariable hp = fm.CreateFLV("hp");
+            FuzzySet lhp = hp.AddLeftShoulderSet("l", 0, 10, 40);
+            FuzzySet mhp = hp.AddTriangle("m", 10, 40, 60);
+            FuzzySet hhp  = hp.AddLeftShoulderSet("h", 40, 60, 100);
+
+            FuzzyVariable desirebility = fm.CreateFLV("desirebility");
+            FuzzySet uddesire = desirebility.AddLeftShoulderSet("ud", 0, 10, 40);
+            FuzzySet ddesire = desirebility.AddTriangle("d", 10, 40, 60);
+            FuzzySet vddesire = desirebility.AddRightShoulderSet("vd", 40, 60, 100);
+        }
 
         public override void Update(float delta)
         {

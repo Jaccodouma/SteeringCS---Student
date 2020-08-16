@@ -73,6 +73,14 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="FuzzyLogic\FuzzyModule.cs" />
+    <Compile Include="FuzzyLogic\FuzzyRule.cs" />
+    <Compile Include="FuzzyLogic\FuzzySet.cs" />
+    <Compile Include="FuzzyLogic\FuzzySet_LeftShoulder.cs" />
+    <Compile Include="FuzzyLogic\FuzzySet_RightShoulder.cs" />
+    <Compile Include="FuzzyLogic\FuzzySet_Triangle.cs" />
+    <Compile Include="FuzzyLogic\FuzzyTerm.cs" />
+    <Compile Include="FuzzyLogic\FuzzyVariable.cs" />
     <Compile Include="Goals\CompositeGoal.cs" />
     <Compile Include="Goals\Goal.cs" />
     <Compile Include="Goals\Goal_Zombie_Attack.cs" />
