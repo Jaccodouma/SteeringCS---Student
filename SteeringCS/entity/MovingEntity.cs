@@ -27,6 +27,11 @@ namespace SteeringCS.entity
 
         public override void Update(float timeElapsed)
         {
+            this.ApplySteeringBehaviours(timeElapsed);
+        }
+
+        public void ApplySteeringBehaviours(float timeElapsed)
+        {
             if (SteeringBehaviours.Count != 0)
             {
                 // Update velocity

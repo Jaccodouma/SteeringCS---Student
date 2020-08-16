@@ -7,13 +7,11 @@ namespace SteeringCS.entity
     class BasicTurret : TurretBase
     {
         private int size = 20;
-        private int range = 100;
         private Zombie target;
         private int checkInterval = 10;
         private int currentCheck = 0;
         private float timeBetweenShots = 10;
         private float nextShotTime = 0;
-
 
         public BasicTurret(Vector2D pos, World w) : base(pos, w) { }
 

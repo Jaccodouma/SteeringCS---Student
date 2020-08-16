@@ -1,4 +1,5 @@
 ﻿using SteeringCS.behaviour;
+using SteeringCS.Goals;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,32 +16,88 @@ namespace SteeringCS.entity
         public Color VColor { get; set; }
         private double health; 
         private double maxHealth = 100;
+        private double healSpeed = 1;
+
+        private Goal currentGoal;
+
+        private Random rnd = new Random();
+
+        #region getters / setters
+        public double GetHealth() { return this.health; }
+        public double getMaxHealth() { return this.maxHealth; }
+        #endregion
 
         public Zombie(Vector2D pos, World w) : base(pos, w)
         {
             Velocity = new Vector2D(0, 0);
             Dir = new Vector2D(w.rnd.Next(-1, 1), w.rnd.Next(-1, 1)).Normalize();
             Scale = 5;
-            health = 100;
+            health = maxHealth;
 
             VColor = Color.DarkGreen;
+            this.currentGoal = new Goal_Zombie_Wander(this);
+            this.currentGoal.Activate();
 
-            Group_CohesionBehaviour coh = new Group_CohesionBehaviour(this, Zombie.zombies);
-            SteeringBehaviours.Add(coh);
+            // Create behaviours
+            // REPLACED WITH GOALS!, commented so I can copy later (: 
+            //Group_CohesionBehaviour coh = new Group_CohesionBehaviour(this, Zombie.zombies);
+            //SteeringBehaviours.Add(coh);
 
-            Group_SeperationBehaviour sep = new Group_SeperationBehaviour(this, Zombie.zombies);
-            SteeringBehaviours.Add(sep);
+            //Group_SeperationBehaviour sep = new Group_SeperationBehaviour(this, Zombie.zombies);
+            //SteeringBehaviours.Add(sep);
 
-            WanderBehaviour wander = new WanderBehaviour(this, 70, 50, 10);
-            SteeringBehaviours.Add(wander);
+            //WanderBehaviour wander = new WanderBehaviour(this, 70, 50, 10);
+            //SteeringBehaviours.Add(wander);
 
-            Group_CohesionBehaviour findTurret = new Group_CohesionBehaviour(this, TurretBase.turrets);
-            findTurret.neighbourhoodRadius = 150;
-            SteeringBehaviours.Add(findTurret);
+            //Group_CohesionBehaviour findTurret = new Group_CohesionBehaviour(this, TurretBase.turrets);
+            //findTurret.neighbourhoodRadius = 150;
+            //SteeringBehaviours.Add(findTurret);
 
             zombies.Add(this);
         }
-        
+
+        public override void Update(float timeElapsed)
+        {
+            base.Update(timeElapsed);
+
+            // Execute current goal 
+            GoalProcess process = GoalProcess.inactive;
+            if (currentGoal != null) {
+                process = currentGoal.Process();
+            }
+
+            if (process == GoalProcess.inactive || process == GoalProcess.completed || process == GoalProcess.failed)
+            {
+                // Terminate old goal
+                currentGoal.Terminate();
+
+                // Find new goal
+                SelectGoal(timeElapsed);
+            }
+            HealOverTime(timeElapsed);
+        }
+
+        public void SelectGoal(float timeElapsed)
+        {
+            /*
+             Select current goal; 
+             When <50 health: heal, 
+             when >50 health: attack
+             */
+
+            // Set goal to wander if there's no goal set
+            if (this.currentGoal == null) this.currentGoal = new Goal_Zombie_Wander(this);
+
+            if (this.health < this.maxHealth / 2)
+            {
+                this.currentGoal = new Goal_Zombie_Heal(this);
+            } else
+            {
+                this.currentGoal = new Goal_Zombie_Attack(this);
+            }
+            this.currentGoal.Activate();
+        }
+
         public override void Render(Graphics g)
         {
             double leftCorner = Pos.X - Scale;
@@ -98,6 +155,9 @@ namespace SteeringCS.entity
             {
                 // Happens when drawing line to outside of the screen
             }
+
+            // Write current goal
+            if (this.currentGoal != null) g.DrawString(this.currentGoal.GetType().Name, SystemFonts.DefaultFont, Brushes.Black, new RectangleF((int)Pos.X, (int)Pos.Y, 400, 100));
         }
 
         public override void RenderDebugPanel(Graphics g, DBPanel p)
@@ -120,6 +180,13 @@ namespace SteeringCS.entity
                 //this.MyWorld.removeEntity(this);
                 Delete();
             }
+        }
+
+        public void HealOverTime(float timeElapsed)
+        {
+
+            this.health += timeElapsed * healSpeed;
+            if (health > maxHealth) health = maxHealth;
         }
 
         public new void Delete()

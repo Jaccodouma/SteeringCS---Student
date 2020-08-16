@@ -16,8 +16,6 @@ namespace SteeringCS
         {
         }
 
-
-
         public Vector2D(double x, double y)
         {
             X = x;

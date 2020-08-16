@@ -124,8 +124,6 @@ namespace SteeringCS
             for (int i = 0; i < 20; i++)
             {
                 Zombie z = addZombie(rnd.Next(0, Width), rnd.Next(0, Height));
-                SeekBehaviour b = new SeekBehaviour(z, targetBase);
-                z.SteeringBehaviours.Add(b);
             }
         }
 

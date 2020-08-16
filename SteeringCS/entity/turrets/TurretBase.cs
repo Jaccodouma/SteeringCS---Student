@@ -9,7 +9,13 @@ namespace SteeringCS.entity
 {
     class TurretBase : BaseGameEntity
     {
-        public static List<BaseGameEntity> turrets = new List<BaseGameEntity>();
+        protected int range = 100;
+
+        #region getters / setters
+        public int getRange() { return this.range; }
+        #endregion
+
+        public static List<TurretBase> turrets = new List<TurretBase>();
 
         public TurretBase(Vector2D pos, World w) : base(pos, w)
         {
