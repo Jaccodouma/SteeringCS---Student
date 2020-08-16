@@ -14,12 +14,8 @@ namespace SteeringCS.Goals
         public CompositeGoal(MovingEntity me) 
             : base(me) { }
 
-        public new void Activate() { }
-        public new GoalProcess Process()
-        {
-            return this.ProcessSubgoals();
-        }
-        public new void Terminate() { }
+        public override void Activate() { }
+        public override void Terminate() { }
         public void AddSubgoal(Goal g)
         {
             // Insert new goal at the start of the list
@@ -35,6 +31,9 @@ namespace SteeringCS.Goals
                 this.goals.RemoveAt(0);
             }
 
+            // If the first goal isn't activated, activate it
+            if (this.goals.First().IsInactive()) this.goals.First().Activate();
+
             // If there's any goals left, process the first 
             if (goals.Count > 0)
             {
@@ -45,7 +44,6 @@ namespace SteeringCS.Goals
                 if (goalStatus == GoalProcess.completed && this.goals.Count > 1) return GoalProcess.active;
 
                 return goalStatus;
-
             }
             else
             {

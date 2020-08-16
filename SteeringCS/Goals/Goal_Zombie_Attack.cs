@@ -44,6 +44,7 @@ namespace SteeringCS.Goals
             seek = new SeekBehaviour(zombie, nearestTurret);
 
             // Add behaviour to zombie
+            seek.weight = 10;
             this.movingEntity.SteeringBehaviours.Add(seek);
 
             this.status = GoalProcess.active;
@@ -51,6 +52,8 @@ namespace SteeringCS.Goals
 
         public override GoalProcess Process()
         {
+            // Fail if health goes under 50
+            if (this.zombie.GetHealth() <= this.zombie.getMaxHealth() / 2) this.status = GoalProcess.failed;
             return status;
         }
         public override void Terminate()
