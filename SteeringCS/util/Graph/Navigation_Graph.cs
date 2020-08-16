@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SteeringCS.util.Data;
+using SteeringCS.entity.turrets;
+using SteeringCS.entity;
 
 namespace SteeringCS.util.Graph
 {
@@ -67,10 +69,11 @@ namespace SteeringCS.util.Graph
             {
                 Get_node(position, new Vector2D(x, y));
             }
-            _Flood_fill(x + graining, y, position); // right
-            _Flood_fill(x - graining, y, position); // left
-            _Flood_fill(x, y + graining, position); // down
-            _Flood_fill(x, y - graining, position); // up
+
+            if(check_for_base(x + graining, y)) _Flood_fill(x + graining, y, position); // right
+            if (check_for_base(x - graining, y)) _Flood_fill(x - graining, y, position); // left
+            if (check_for_base(x, y + graining)) _Flood_fill(x, y + graining, position); // down
+            if (check_for_base(x, y - graining)) _Flood_fill(x, y - graining, position); // up
 
             //check if edge already exists
             //edge x+graining, y - right
@@ -171,6 +174,24 @@ namespace SteeringCS.util.Graph
                 }
                 else throw new Exception("key not found: " + (Graph.ID_generator(key.Value)));
             }
+        }
+
+
+        /*----------------------------------------------------------------*/
+        /*Base-turret-check-----------------------------------------------*/
+        /*----------------------------------------------------------------*/
+        private bool check_for_base(double x, double y)
+        {
+            foreach(TurretBase t in TurretBase.turrets)
+            {
+                if (x - t.Pos.X >= -graining && x - t.Pos.X <= graining &&
+               y - t.Pos.Y >= -graining && y - t.Pos.Y <= graining) return false;
+            }
+            //check if x,y position is within graining pixels of a base
+           
+
+            return true;
+
         }
     }
 }

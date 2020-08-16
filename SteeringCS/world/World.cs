@@ -28,7 +28,7 @@ namespace SteeringCS
 
         public float time;
 
-        Base targetBase;
+        public Base targetBase;
 
         public World(int w, int h)
         {
@@ -36,13 +36,14 @@ namespace SteeringCS
             Height = h;
 
             //obstacles init
+            targetBase = new Base(new Vector2D(Width / 2, Height / 2), this);
+
             partitioning = new Cellspace_partitioning(this, 10, 10, 100);
             navigation_graph = new Navigation_Graph(this, graining, partitioning);
             path_Planning = new Path_planning(this);
             
             time = 0;
 
-            targetBase = new Base(new Vector2D(Width / 2, Height / 2), this);
 
             addZombies();
         }
