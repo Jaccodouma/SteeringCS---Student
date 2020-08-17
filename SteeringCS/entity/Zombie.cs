@@ -163,13 +163,35 @@ namespace SteeringCS.entity
                 // Happens when drawing line to outside of the screen
             }
 
-            // Write current goal
-            if (this.currentGoal != null) g.DrawString(this.currentGoal.GetType().Name, SystemFonts.DefaultFont, Brushes.Black, new RectangleF((int)Pos.X, (int)Pos.Y, 400, 100));
+            // Write current goals
+            string goalString = "";
+            List<Goal> goalsToCheck = new List<Goal>();
+            goalsToCheck.Add(this.currentGoal);
+            while (goalsToCheck.Count > 0)
+            {
+                goalString += goalsToCheck[0].GetType().Name + "\n"; 
+
+                // Add subgoals
+                if (goalsToCheck[0] is CompositeGoal)
+                {
+                    CompositeGoal cg = (CompositeGoal)goalsToCheck[0];
+                    foreach (Goal goal in cg.goals)
+                    {
+                        goalsToCheck.Add(goal);
+                    }
+                }
+
+                goalsToCheck.RemoveAt(0);
+            }
+            goalString += this.currentGoal.GetType().Name;
+
+            if (this.currentGoal != null) g.DrawString(goalString, SystemFonts.DefaultFont, Brushes.Black, new RectangleF((int)Pos.X, (int)Pos.Y, 400, 100));
         }
 
         public override void RenderDebugPanel(Graphics g, DBPanel p)
         {
             int x = 0, y = 0;
+            if (this.SteeringBehaviours.Count <= 0) return;
             this.SteeringBehaviours.ForEach(b =>
             {
                 b.RenderInfoPanel(g, x, y);

@@ -9,7 +9,7 @@ namespace SteeringCS.Goals
 {
     class CompositeGoal : Goal
     {
-        List<Goal> goals = new List<Goal>();
+        public List<Goal> goals = new List<Goal>();
 
         public CompositeGoal(MovingEntity me) 
             : base(me) { }
