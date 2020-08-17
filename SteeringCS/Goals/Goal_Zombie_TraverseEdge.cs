@@ -19,8 +19,8 @@ namespace SteeringCS.Goals
             : base(z)
         {
             this.zombie = z;
-            this.from = from;
-            this.to = to; 
+            this.from = from.Clone();
+            this.to = to.Clone(); 
         }
 
         public override void Activate()
@@ -37,7 +37,7 @@ namespace SteeringCS.Goals
         {
             // Set status to complete if near the goal 
             double distSqr = (zombie.Pos - to).LengthSquared();
-            if (distSqr > Math.Pow(5,2))
+            if (distSqr > Math.Pow(1,2))
             {
                 this.status = GoalProcess.completed;
             }
