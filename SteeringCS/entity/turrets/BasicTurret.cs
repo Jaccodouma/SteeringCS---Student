@@ -19,38 +19,40 @@ namespace SteeringCS.entity
         public BasicTurret(Vector2D pos, World w) : base(pos, w)
         {
             fm = new FuzzyModule();
-            FuzzyVariable distance = fm.CreateFLV("distance");
-            FzSet cDistance = distance.AddLeftShoulderSet("c", 0, 10, 50);
-            FzSet mDistance = distance.AddTriangle("m", 10, 50, 90);
-            FzSet fDistance = distance.AddRightShoulderSet("f", 50, 90, 100);
+            FuzzyVariable distance = fm.CreateFLV("DISTANCE");
+            FzSet cDistance = distance.AddLeftShoulderSet("CLOSE", 0, 30, 50);
+            FzSet mDistance = distance.AddTriangle("MEDIUM", 30, 50, 70);
+            FzSet fDistance = distance.AddRightShoulderSet("FAR", 50, 70, 100);
 
-            FuzzyVariable hp = fm.CreateFLV("hp");
-            FzSet lhp = hp.AddLeftShoulderSet("l", 0, 10, 40);
-            FzSet mhp = hp.AddTriangle("m", 10, 40, 80);
-            FzSet hhp = hp.AddLeftShoulderSet("h", 40, 80, 100);
+            FuzzyVariable hp = fm.CreateFLV("HP");
+            FzSet lhp = hp.AddLeftShoulderSet("LOW", 0, 30, 50);
+            FzSet mhp = hp.AddTriangle("MEDIUM", 30, 50, 70);
+            FzSet hhp = hp.AddLeftShoulderSet("HIGH", 50, 70, 100);
 
             FuzzyVariable desirebility = fm.CreateFLV("desirebility");
-            FzSet undesire = desirebility.AddLeftShoulderSet("ud", 0, 10, 40);
-            FzSet ddesire = desirebility.AddTriangle("d", 10, 40, 60);
-            FzSet vddesire = desirebility.AddRightShoulderSet("vd", 40, 60, 100);
+            FzSet undesire = desirebility.AddLeftShoulderSet("UNDESIRABLE", 0, 30, 50);
+            FzSet ddesire = desirebility.AddTriangle("DESIRABLE", 30, 50, 70);
+            FzSet vddesire = desirebility.AddRightShoulderSet("VERY DESIRABLE", 50, 70, 100);
 
-            fm.Addrule(new FzAND(cDistance, lhp), ddesire);
-            fm.Addrule(new FzAND(cDistance, mhp), undesire);
-            fm.Addrule(new FzAND(cDistance, hhp), undesire);
+            fm.Addrule(new FzAND(cDistance, lhp), vddesire);
+            fm.Addrule(new FzAND(cDistance, mhp), ddesire);
+            fm.Addrule(new FzAND(cDistance, hhp), ddesire);
 
-            fm.Addrule(new FzAND(mDistance, lhp), ddesire);
+            fm.Addrule(new FzAND(mDistance, lhp), vddesire);
             fm.Addrule(new FzAND(mDistance, mhp), ddesire);
-            fm.Addrule(new FzAND(mDistance, hhp), undesire);
+            fm.Addrule(new FzAND(mDistance, hhp), ddesire);
 
             fm.Addrule(new FzAND(fDistance, lhp), vddesire);
             fm.Addrule(new FzAND(fDistance, mhp), ddesire);
-            fm.Addrule(new FzAND(fDistance, hhp), ddesire);
+            fm.Addrule(new FzAND(fDistance, hhp), undesire);
+
+            fm.Addrule(new FzOR(cDistance, lhp), vddesire); 
         }
 
         private double CalculateDesireablity(double distance, double hp)
         {
-            this.fm.Fuzzify("distance", distance);
-            this.fm.Fuzzify("hp", hp);
+            this.fm.Fuzzify("DISTANCE", distance);
+            this.fm.Fuzzify("HP", hp);
 
             return fm.DeFuzzify("desirebility");
         }
