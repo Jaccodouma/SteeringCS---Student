@@ -54,6 +54,7 @@
     <Compile Include="behaviour\FleeBehaviour.cs" />
     <Compile Include="behaviour\Group_CohesionBehaviour.cs" />
     <Compile Include="behaviour\Group_SeperationBehaviour.cs" />
+    <Compile Include="behaviour\MoveToPointBehaviour.cs" />
     <Compile Include="behaviour\PursuitBehaviour.cs" />
     <Compile Include="behaviour\WanderBehaviour.cs" />
     <Compile Include="entity\BaseGameEntity.cs" />
@@ -86,6 +87,8 @@
     <Compile Include="Goals\Goal_Zombie_Attack.cs" />
     <Compile Include="Goals\Goal_Zombie_Flee.cs" />
     <Compile Include="Goals\Goal_Zombie_Heal.cs" />
+    <Compile Include="Goals\Goal_Zombie_MoveToPoint.cs" />
+    <Compile Include="Goals\Goal_Zombie_TraverseEdge.cs" />
     <Compile Include="Goals\Goal_Zombie_Wander.cs" />
     <Compile Include="Goals\Goal_Zombie_WanderWhileHealing.cs" />
     <Compile Include="Program.cs" />

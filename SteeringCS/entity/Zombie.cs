@@ -14,7 +14,7 @@ namespace SteeringCS.entity
         public static List<BaseGameEntity> zombies = new List<BaseGameEntity>();
 
         public Color VColor { get; set; }
-        private double health; 
+        private double health;
         private double maxHealth = 100;
         private double healSpeed = 1;
 
@@ -25,6 +25,13 @@ namespace SteeringCS.entity
         #region getters / setters
         public double GetHealth() { return this.health; }
         public double getMaxHealth() { return this.maxHealth; }
+        public Goal getCurrentGoal() { return this.currentGoal; }
+        public void setCurrentGoal(Goal goal)
+        {
+            this.currentGoal.Terminate();
+            this.currentGoal = goal;
+            this.currentGoal.Activate();
+        }
         #endregion
 
         public Zombie(Vector2D pos, World w) : base(pos, w)

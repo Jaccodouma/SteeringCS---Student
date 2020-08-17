@@ -80,6 +80,49 @@ namespace SteeringCS.util.Graph
             return closest_node_found.no_closest_node_found.ToString();
         }
 
+        public List<Vector2D> PathFromTo(Vector2D from, Vector2D to, kind_of_algorithm algorithm = kind_of_algorithm.AS)
+        {
+            List<Vector2D> path = new List<Vector2D>();
+
+            string fromNode = Get_closest_node_to_position(from);
+            string toNode = Get_closest_node_to_position(to);
+
+            // Return empty path if no to or from nodes found
+            if (fromNode == closest_node_found.no_closest_node_found.ToString() ||
+                toNode == closest_node_found.no_closest_node_found.ToString())
+            {
+                return path; 
+            }
+
+            // Reset node values for algorithm 
+            currentGraph.Reset_algorithm();
+            
+            // Execute algorithm
+            switch (algorithm)
+            {
+                case kind_of_algorithm.AS:
+                    path.Add(destination_position.Clone());
+                    A_star(path, fromNode, toNode);
+                    path.Add(from);
+                    path.Reverse();
+                    break;
+                case kind_of_algorithm.BF:
+                    path.Add(owner.Pos.Clone());
+                    Breath_first_search_fast(path, fromNode, toNode);
+                    path.Add(to);
+                    break;
+                case kind_of_algorithm.DK:
+                default:
+                    path.Add(destination_position.Clone());
+                    Dijkstra_fast(path, fromNode, toNode);
+                    path.Add(from);
+                    path.Reverse();
+                    break;
+            }
+
+            return path;
+        }
+
         public bool Create_path_to_position(Vector2D target_position, List<Vector2D> path, kind_of_algorithm algorithm, Graphics g)
         {
             //set the requested target position

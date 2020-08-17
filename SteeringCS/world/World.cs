@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using SteeringCS.util.Graph;
 using SteeringCS.util.Data;
 using SteeringCS.entity.turrets;
+using SteeringCS.Goals;
 
 namespace SteeringCS
 {
@@ -111,6 +112,20 @@ namespace SteeringCS
                 navigation_graph.Render(g);
             }
 
+        }
+        // Sets target position on click
+        public void setTarget(int x, int y)
+        {
+            if (this.selectedEntity == null) return;
+            if (this.selectedEntity.GetType() != typeof(Zombie)) return;
+
+            Zombie z = (Zombie) this.selectedEntity;
+
+            // Create Goal_Zombie_MoveToPoint goal
+            Goal_Zombie_MoveToPoint newGoal = new Goal_Zombie_MoveToPoint(z,path_Planning,new Vector2D(x,y));
+
+            // Add goal to zombie
+            z.setCurrentGoal(newGoal);
         }
 
         public Zombie addZombie(int x, int y)

@@ -31,12 +31,13 @@ namespace SteeringCS.Goals
                 this.goals.RemoveAt(0);
             }
 
-            // If the first goal isn't activated, activate it
-            if (this.goals.First().IsInactive()) this.goals.First().Activate();
 
             // If there's any goals left, process the first 
             if (goals.Count > 0)
             {
+                // If the first goal isn't activated, activate it
+                if (this.goals.First().IsInactive()) this.goals.First().Activate();
+
                 // Process the first goal 
                 GoalProcess goalStatus = this.goals.First().Process();
 
