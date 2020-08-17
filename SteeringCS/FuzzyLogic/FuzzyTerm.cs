@@ -8,6 +8,8 @@ namespace SteeringCS.FuzzyLogic
 {
     class FuzzyTerm
     {
+        public List<FuzzyTerm> terms;
+
         virtual public FuzzyTerm Clone() { return null; }
 
         virtual public double GetDOM() { return 0; }

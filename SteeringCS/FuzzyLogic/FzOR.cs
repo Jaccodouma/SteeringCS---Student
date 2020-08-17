@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SteeringCS.FuzzyLogic
 {
-    class FzAND : FuzzyTerm
+    class FzOR : FuzzyTerm
     {
-        public FzAND(FuzzyTerm op1, FuzzyTerm op2, FuzzyTerm op3, FuzzyTerm op4)
+        public FzOR(FuzzyTerm op1, FuzzyTerm op2, FuzzyTerm op3, FuzzyTerm op4)
         {
             terms = new List<FuzzyTerm>();
             this.terms.Add(op1.Clone());
@@ -17,7 +17,7 @@ namespace SteeringCS.FuzzyLogic
             this.terms.Add(op4.Clone());
             Console.WriteLine("check");
         }
-        public FzAND(FuzzyTerm op1, FuzzyTerm op2, FuzzyTerm op3)
+        public FzOR(FuzzyTerm op1, FuzzyTerm op2, FuzzyTerm op3)
         {
             terms = new List<FuzzyTerm>();
             this.terms.Add(op1.Clone());
@@ -25,15 +25,13 @@ namespace SteeringCS.FuzzyLogic
             this.terms.Add(op3.Clone());
             Console.WriteLine("check");
         }
-        public FzAND(FuzzyTerm op1, FuzzyTerm op2)
+        public FzOR(FuzzyTerm op1, FuzzyTerm op2)
         {
             terms = new List<FuzzyTerm>();
             this.terms.Add(op1.Clone());
             this.terms.Add(op2.Clone());
-            Console.WriteLine("check");
         }
-
-        public FzAND(FuzzyTerm term)
+        public FzOR(FuzzyTerm term)
         {
             terms = new List<FuzzyTerm>();
             foreach (FuzzyTerm t in term.terms)
@@ -52,25 +50,22 @@ namespace SteeringCS.FuzzyLogic
 
         public override FuzzyTerm Clone()
         {
-            return new FzAND(this);
+            return new FzOR(this);
         }
 
         public override double GetDOM()
         {
-            double smallest = double.MaxValue;
-            foreach (FuzzyTerm t in terms)
+            double largest = double.MinValue;
+            foreach(FuzzyTerm t in terms)
             {
-                if (t.GetDOM() < smallest) smallest = t.GetDOM();
+                if (t.GetDOM() > largest) largest = t.GetDOM();
             }
-            return smallest;
+            return largest;
         }
 
         public override void ORwithDOM(double val)
         {
-            foreach (FuzzyTerm t in terms)
-            {
-                t.ORwithDOM(val);
-            }
+            base.ORwithDOM(val);
         }
     }
 }
