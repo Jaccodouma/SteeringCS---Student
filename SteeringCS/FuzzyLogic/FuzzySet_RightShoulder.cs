@@ -25,7 +25,6 @@ namespace SteeringCS.FuzzyLogic
             if ((val <= peakPoint) && (val > (peakPoint - leftOffSet)))
             {
                 double grad = 1.0 / leftOffSet;
-
                 return grad * (val - (peakPoint - leftOffSet));
             }
 

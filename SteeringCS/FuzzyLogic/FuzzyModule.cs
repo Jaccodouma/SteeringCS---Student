@@ -9,29 +9,47 @@ namespace SteeringCS.FuzzyLogic
 {
     class FuzzyModule
     {
-        protected Dictionary<string, FuzzyVariable> variables;
-        protected List<FuzzyRule> rules;
+        protected Dictionary<string, FuzzyVariable> variables = new Dictionary<string, FuzzyVariable>();
+        protected List<FuzzyRule> rules = new List<FuzzyRule>();
 
         //creates an empty fuzzyvariable
         public FuzzyVariable CreateFLV(string name)
         {
-            return new FuzzyVariable();
+            variables.Add(name, new FuzzyVariable());
+            return variables[name];
         }
 
         //add rule to fuzzy module
         public void Addrule(FuzzyTerm antecedent, FuzzyTerm consequence)
         {
-            rules.Add(new FuzzyRule());
+            rules.Add(new FuzzyRule(antecedent, consequence));
         }
 
         public void Fuzzify(string FLV, double value)
         {
-            return;
+            if (variables.ContainsKey(FLV))
+            {
+                variables[FLV].Fuzzify(value);
+            }
         }
 
         public double DeFuzzify(string key)
         {
-            return 0;
+            if (variables.ContainsKey(key))
+            {
+                foreach (FuzzyRule r in rules)
+                {
+                    r.SetConfidenceOfConsequentToZero();
+                }
+
+                foreach (FuzzyRule r in rules)
+                {
+                    r.Calculate();
+                }
+
+                return variables[key].DefuzzifyMaxAV();
+            }
+            else throw new KeyNotFoundException();
         }
     }
 }

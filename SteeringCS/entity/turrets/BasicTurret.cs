@@ -16,23 +16,43 @@ namespace SteeringCS.entity
         private float timeBetweenShots = 10;
         private float nextShotTime = 0;
 
-        public BasicTurret(Vector2D pos, World w) : base(pos, w) 
+        public BasicTurret(Vector2D pos, World w) : base(pos, w)
         {
             fm = new FuzzyModule();
             FuzzyVariable distance = fm.CreateFLV("distance");
-            FuzzySet cDistance = distance.AddLeftShoulderSet("c", 0, 2000, 10000);
-            FuzzySet mDistance = distance.AddTriangle("m", 2000, 10000, 18000);
-            FuzzySet fDistance = distance.AddRightShoulderSet("f", 10000, 18000, 20000);
+            FzSet cDistance = distance.AddLeftShoulderSet("c", 0, 10, 50);
+            FzSet mDistance = distance.AddTriangle("m", 10, 50, 90);
+            FzSet fDistance = distance.AddRightShoulderSet("f", 50, 90, 100);
 
             FuzzyVariable hp = fm.CreateFLV("hp");
-            FuzzySet lhp = hp.AddLeftShoulderSet("l", 0, 10, 40);
-            FuzzySet mhp = hp.AddTriangle("m", 10, 40, 60);
-            FuzzySet hhp  = hp.AddLeftShoulderSet("h", 40, 60, 100);
+            FzSet lhp = hp.AddLeftShoulderSet("l", 0, 10, 40);
+            FzSet mhp = hp.AddTriangle("m", 10, 40, 80);
+            FzSet hhp = hp.AddLeftShoulderSet("h", 40, 80, 100);
 
             FuzzyVariable desirebility = fm.CreateFLV("desirebility");
-            FuzzySet uddesire = desirebility.AddLeftShoulderSet("ud", 0, 10, 40);
-            FuzzySet ddesire = desirebility.AddTriangle("d", 10, 40, 60);
-            FuzzySet vddesire = desirebility.AddRightShoulderSet("vd", 40, 60, 100);
+            FzSet undesire = desirebility.AddLeftShoulderSet("ud", 0, 10, 40);
+            FzSet ddesire = desirebility.AddTriangle("d", 10, 40, 60);
+            FzSet vddesire = desirebility.AddRightShoulderSet("vd", 40, 60, 100);
+
+            fm.Addrule(new FzAND(cDistance, lhp), ddesire);
+            fm.Addrule(new FzAND(cDistance, mhp), undesire);
+            fm.Addrule(new FzAND(cDistance, hhp), undesire);
+
+            fm.Addrule(new FzAND(mDistance, lhp), ddesire);
+            fm.Addrule(new FzAND(mDistance, mhp), ddesire);
+            fm.Addrule(new FzAND(mDistance, hhp), undesire);
+
+            fm.Addrule(new FzAND(fDistance, lhp), vddesire);
+            fm.Addrule(new FzAND(fDistance, mhp), ddesire);
+            fm.Addrule(new FzAND(fDistance, hhp), ddesire);
+        }
+
+        private double CalculateDesireablity(double distance, double hp)
+        {
+            this.fm.Fuzzify("distance", distance);
+            this.fm.Fuzzify("hp", hp);
+
+            return fm.DeFuzzify("desirebility");
         }
 
         public override void Update(float delta)
@@ -44,22 +64,38 @@ namespace SteeringCS.entity
                 List<BaseGameEntity> zombies = Zombie.zombies;
                 Zombie nearestZombie = null;
                 Vector2D nearestZombieDistance = new Vector2D(range, range);
+                double bestScore = -1;
+                Zombie bestZombie = null;
 
                 zombies.ForEach(z =>
                 {
+
                     Vector2D distance = z.Pos - this.Pos;
                     double len = distance.LengthSquared();
-                    if (len < nearestZombieDistance.LengthSquared() && len < Math.Pow(range, 2))
+                    //if (len < nearestZombieDistance.LengthSquared() && len < Math.Pow(range, 2))
+                    //{
+                    //    nearestZombie = (Zombie)z;
+                    //    nearestZombieDistance = distance;
+                    //}
+
+                    if (len < Math.Pow(range, 2))
                     {
                         nearestZombie = (Zombie)z;
                         nearestZombieDistance = distance;
+                        double score = CalculateDesireablity(distance.Length(), nearestZombie.GetHealth());
+                        if(score > bestScore)
+                        {
+                            bestZombie = nearestZombie;
+                            bestScore = score;
+                        }
+                        Console.WriteLine(score);
                     }
                 });
 
                 // Set target
-                if (nearestZombie != null)
+                if (bestZombie != null)
                 {
-                    target = nearestZombie;
+                    target = bestZombie;
                 }
                 else
                 {

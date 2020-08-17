@@ -82,6 +82,8 @@
     <Compile Include="FuzzyLogic\FuzzySet_Triangle.cs" />
     <Compile Include="FuzzyLogic\FuzzyTerm.cs" />
     <Compile Include="FuzzyLogic\FuzzyVariable.cs" />
+    <Compile Include="FuzzyLogic\FzAND.cs" />
+    <Compile Include="FuzzyLogic\FzSet.cs" />
     <Compile Include="Goals\CompositeGoal.cs" />
     <Compile Include="Goals\Goal.cs" />
     <Compile Include="Goals\Goal_Zombie_Attack.cs" />
